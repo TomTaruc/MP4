@@ -1,6 +1,7 @@
 import { LayoutDashboard, Sparkles as SignsIcon, Users, LogOut, Sparkles } from 'lucide-react';
 import { Page } from '../types';
-import { useAuth } from '../contexts/AuthContext';
+// FIX: Updated path to correctly reference AuthContext from the components directory
+import { useAuth } from '../contexts/AuthContext'; 
 
 interface AdminSidebarProps {
   currentPage: Page;
@@ -15,6 +16,16 @@ const navItems = [
 
 export default function AdminSidebar({ currentPage, onNavigate }: AdminSidebarProps) {
   const { signOut } = useAuth();
+
+  // Added a wrapper to handle navigation after signing out
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      onNavigate('login'); // Redirect to login page upon successful logout
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 z-40 flex flex-col" style={{
@@ -60,7 +71,7 @@ export default function AdminSidebar({ currentPage, onNavigate }: AdminSidebarPr
 
       <div className="px-4 py-4 border-t border-blue-900/40">
         <button
-          onClick={signOut}
+          onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-red-400 hover:bg-red-900/20 transition-all duration-200"
         >
           <LogOut size={18} />

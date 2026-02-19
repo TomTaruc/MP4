@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Shield, Eye, EyeOff, Mail, Lock, User, KeyRound, CheckCircle } from 'lucide-react';
-// FIX: Updated paths to move up two levels from src/pages/admin/
-import { supabase } from '../../lib/supabase'; 
+// Updated paths to move up two levels from src/pages/admin/ to reach src/lib and src/types
+import { supabase } from '../../lib/supabase';
 import { Page } from '../../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -71,13 +71,11 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
       });
 
       if (profErr) {
-        // Profile insert failed — clean up auth user to avoid orphans
         setError(`Profile creation failed: ${profErr.message}`);
         await supabase.auth.signOut();
         return;
       }
 
-      // 3. Handle post-registration navigation
       if (authData.session) {
         onNavigate('admin-dashboard');
       } else {
@@ -92,7 +90,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
     }
   }
 
-  // ── Shared styles ────────────────────────────────────────────────────────
   const card = {
     background: 'linear-gradient(135deg, rgba(5,15,35,0.97), rgba(0,30,70,0.92))',
     border: '1px solid rgba(0,191,255,0.22)',
@@ -108,8 +105,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 relative z-10">
       <div className="w-full max-w-md">
-
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
             style={{ background: 'radial-gradient(circle, #00BFFF, #0369a1)', boxShadow: '0 0 35px rgba(0,191,255,0.5)' }}>
@@ -121,7 +116,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
           <p className="text-cyan-400/60 text-sm">Create a new AstroSoul admin account</p>
         </div>
 
-        {/* Step indicator */}
         {step !== 'success' && (
           <div className="flex items-center mb-7">
             {[{ n: 1, label: 'Verify Code' }, { n: 2, label: 'Create Account' }].map(({ n, label }, i) => {
@@ -154,8 +148,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
         )}
 
         <div className="rounded-2xl p-8" style={card}>
-
-          {/* ── SUCCESS SCREEN ── */}
           {step === 'success' && (
             <div className="text-center py-4">
               <CheckCircle size={48} className="text-green-400 mx-auto mb-4" />
@@ -174,7 +166,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
             </div>
           )}
 
-          {/* ── STEP 1: VERIFY CODE ── */}
           {step === 'verify' && (
             <form onSubmit={verifyCode} className="space-y-5">
               <div className="text-center mb-1">
@@ -220,7 +211,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
             </form>
           )}
 
-          {/* ── STEP 2: REGISTRATION FORM ── */}
           {step === 'form' && (
             <form onSubmit={handleRegister} className="space-y-4">
               {error && (
@@ -230,7 +220,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 </div>
               )}
 
-              {/* Full Name */}
               <div>
                 <label className="block text-cyan-300/60 text-xs mb-1.5 uppercase tracking-wider font-medium">Full Name</label>
                 <div className="relative">
@@ -241,7 +230,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 </div>
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-cyan-300/60 text-xs mb-1.5 uppercase tracking-wider font-medium">Email Address</label>
                 <div className="relative">
@@ -252,7 +240,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="block text-cyan-300/60 text-xs mb-1.5 uppercase tracking-wider font-medium">Password</label>
                 <div className="relative">
@@ -267,7 +254,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div>
                 <label className="block text-cyan-300/60 text-xs mb-1.5 uppercase tracking-wider font-medium">Confirm Password</label>
                 <div className="relative">
@@ -278,7 +264,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 </div>
               </div>
 
-              {/* Submit */}
               <button type="submit" disabled={loading}
                 className="w-full py-3.5 rounded-xl text-white font-semibold text-sm transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 mt-1"
                 style={{
