@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Shield, Eye, EyeOff, Mail, Lock, User, KeyRound, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import { Page } from '../types';
+// FIX: Updated paths to move up two levels from src/pages/admin/
+import { supabase } from '../../lib/supabase'; 
+import { Page } from '../../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  ADMIN SECRET CODE
@@ -60,8 +61,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
       if (!authData.user) { setError('Registration failed — please try again.'); return; }
 
       // 2. Insert profile with role = 'admin'
-      //    We use the user ID from authData even if email confirmation is required,
-      //    because the user row in auth.users already exists at this point.
       const { error: profErr } = await supabase.from('profiles').insert({
         id:            authData.user.id,
         full_name:     fullName.trim(),
@@ -78,13 +77,10 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
         return;
       }
 
-      // 3. If Supabase returned a session (email confirmation disabled), go straight in.
-      //    If not, show success + tell them to confirm email then log in.
+      // 3. Handle post-registration navigation
       if (authData.session) {
-        // Signed in immediately — navigate to admin dashboard
         onNavigate('admin-dashboard');
       } else {
-        // Email confirmation required — show success screen
         setStep('success');
       }
 
@@ -125,7 +121,7 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
           <p className="text-cyan-400/60 text-sm">Create a new AstroSoul admin account</p>
         </div>
 
-        {/* Step indicator (only for verify + form) */}
+        {/* Step indicator */}
         {step !== 'success' && (
           <div className="flex items-center mb-7">
             {[{ n: 1, label: 'Verify Code' }, { n: 2, label: 'Create Account' }].map(({ n, label }, i) => {
@@ -167,10 +163,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
               <p className="text-slate-300 text-sm mb-2">
                 Your admin account has been created successfully.
               </p>
-              <p className="text-cyan-300/70 text-xs mb-6 leading-relaxed">
-                Email confirmation is required. Please check your inbox, confirm your email,
-                then come back and sign in using <strong className="text-cyan-300">Admin Login</strong>.
-              </p>
               <button onClick={() => onNavigate('login')}
                 className="w-full py-3 rounded-xl text-white font-semibold text-sm"
                 style={{
@@ -188,9 +180,6 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
               <div className="text-center mb-1">
                 <KeyRound size={28} className="text-cyan-400 mx-auto mb-2" />
                 <p className="text-white font-semibold text-sm">Enter Admin Access Code</p>
-                <p className="text-slate-500 text-xs mt-1">
-                  This code prevents unauthorized admin registrations.
-                </p>
               </div>
 
               {codeError && (
@@ -228,26 +217,12 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                 }}>
                 Verify Code →
               </button>
-
-              <p className="text-center text-slate-600 text-xs pt-1">
-                Already registered?{' '}
-                <button type="button" onClick={() => onNavigate('login')}
-                  className="text-cyan-400 hover:text-cyan-200 transition-colors font-medium">
-                  Sign In
-                </button>
-              </p>
             </form>
           )}
 
           {/* ── STEP 2: REGISTRATION FORM ── */}
           {step === 'form' && (
             <form onSubmit={handleRegister} className="space-y-4">
-              <div className="flex items-center gap-2 mb-3 p-2.5 rounded-lg"
-                style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                <CheckCircle size={14} className="text-green-400 flex-shrink-0" />
-                <span className="text-green-400 text-xs font-medium">Access code verified — fill in your details below</span>
-              </div>
-
               {error && (
                 <div className="p-3 rounded-xl text-sm"
                   style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.28)', color: '#fca5a5' }}>
@@ -311,34 +286,11 @@ export default function AdminRegisterPage({ onNavigate }: Props) {
                   boxShadow: '0 4px 20px rgba(0,191,255,0.25)',
                   border: '1px solid rgba(0,191,255,0.4)',
                 }}>
-                {loading
-                  ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                      Creating Account...
-                    </span>
-                  )
-                  : '🛡️ Create Admin Account'}
-              </button>
-
-              <button type="button" onClick={() => setStep('verify')}
-                className="w-full text-center text-xs transition-colors pt-1"
-                style={{ color: 'rgba(255,255,255,0.2)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.2)')}>
-                ← Back to code verification
+                {loading ? 'Creating Account...' : '🛡️ Create Admin Account'}
               </button>
             </form>
           )}
         </div>
-
-        <button onClick={() => onNavigate('login')}
-          className="block text-center text-xs mt-5 mx-auto transition-colors"
-          style={{ color: 'rgba(255,255,255,0.18)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.18)')}>
-          ← Back to Login
-        </button>
       </div>
     </div>
   );
