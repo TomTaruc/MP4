@@ -10,7 +10,7 @@ interface RegisterPageProps {
 }
 
 export default function RegisterPage({ onNavigate }: RegisterPageProps) {
-  const { refreshProfile } = useAuth(); // Added to refresh global state
+  const { refreshProfile } = useAuth();
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
@@ -49,17 +49,16 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
         role: 'user',
       });
       
-      // Handle potential database row-level security or insert errors
       if (profileError) {
         setError(profileError.message);
         setLoading(false);
         return;
       }
       
-      // Update the AuthContext so App.tsx recognizes the new profile and routes to dashboard
       await refreshProfile(); 
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const inputClass = "w-full px-4 py-3 rounded-xl text-white placeholder-purple-500 outline-none text-sm";

@@ -9,7 +9,7 @@ interface LoginPageProps {
 }
 
 export default function LoginPage({ onNavigate }: LoginPageProps) {
-  const { refreshProfile } = useAuth(); // Brought in to force the app to recognize the login
+  const { refreshProfile } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,11 +27,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
       setError(authError.message);
       setLoading(false);
     } else {
-      // Upon successful login, force the AuthContext to fetch the profile 
-      // so App.tsx routes us directly to the dashboard
       await refreshProfile();
-      // Notice we don't set loading to false here, which prevents the 
-      // user from clicking the button multiple times while the screen transitions
     }
   }
 
@@ -74,7 +70,6 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
                   style={{
                     background: 'rgba(26,5,51,0.6)',
                     border: '1px solid rgba(123,97,255,0.3)',
-                    focusRingColor: '#7B61FF',
                   }}
                 />
               </div>
