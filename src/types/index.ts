@@ -28,6 +28,7 @@ export type Page =
   | 'landing'
   | 'login'
   | 'register'
+  | 'admin-register'
   | 'dashboard'
   | 'my-zodiac'
   | 'daily'

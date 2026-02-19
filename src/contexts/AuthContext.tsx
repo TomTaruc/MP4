@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { Profile } from '../types';
+import { getZodiacSign } from '../utils/zodiac';
 
 interface AuthContextType {
   user: User | null;
@@ -20,12 +21,10 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser]       = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Wraps any promise with a timeout so a hanging DB/network call
-  // can never freeze the UI indefinitely.
   function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
     return Promise.race([
       promise,
@@ -36,12 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function fetchProfile(userId: string): Promise<Profile | null> {
     try {
       const result = await withTimeout(
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle(),
-        5000 // give up after 5 seconds
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        5000
       );
 
       if (!result) {
@@ -54,8 +49,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('fetchProfile error:', error.message);
         return null;
       }
+      if (!data) return null;
 
-      return (data as Profile) ?? null;
+      const raw = data as Profile;
+
+      // ── AUTO-CORRECT zodiac_sign from date_of_birth ──────────────────────
+      // The DB may have a stale or wrong zodiac_sign (e.g. 'Aries' from a bug).
+      // Always recalculate from date_of_birth — it is the source of truth.
+      if (raw.date_of_birth) {
+        const correctSign = getZodiacSign(raw.date_of_birth);
+        if (correctSign && correctSign !== raw.zodiac_sign) {
+          console.info(
+            `[AuthContext] Correcting zodiac_sign "${raw.zodiac_sign}" → "${correctSign}" for user ${userId}`
+          );
+          // Persist correction to DB silently in background
+          supabase
+            .from('profiles')
+            .update({ zodiac_sign: correctSign })
+            .eq('id', userId)
+            .then(({ error: updateErr }) => {
+              if (updateErr) console.error('zodiac_sign update error:', updateErr.message);
+            });
+          // Return corrected profile immediately — don't wait for DB write
+          return { ...raw, zodiac_sign: correctSign };
+        }
+      }
+
+      return raw;
     } catch (err) {
       console.error('fetchProfile exception:', err);
       return null;
@@ -66,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const result = await withTimeout(supabase.auth.getSession(), 5000);
       if (!result) return;
-
       const { data: { session } } = result;
       if (session?.user) {
         setUser(session.user);
@@ -84,12 +103,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function initializeAuth() {
       try {
         const result = await withTimeout(supabase.auth.getSession(), 8000);
-
         if (!mounted) return;
 
         if (!result) {
           console.warn('getSession() timed out — treating as no session');
-          return; // finally will still run
+          return;
         }
 
         const { data: { session }, error } = result;
@@ -114,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
-        if (event === 'INITIAL_SESSION') return; // handled by initializeAuth
+        if (event === 'INITIAL_SESSION') return;
 
         const currentUser = session?.user ?? null;
         setUser(currentUser);

@@ -63,86 +63,86 @@ const ZODIAC_DATA: Record<string, {
     love: 'Gemini needs mental stimulation in love. They are fun, flirty, and spontaneous. A partner who can match their wit and keep them guessing will hold their heart.',
     career: 'Writing, media, sales, and teaching are ideal for Gemini. They excel in fast-paced environments where they can use their communication skills.',
     health: 'The lungs, arms, and nervous system are Gemini\'s focus. Breathwork, meditation, and avoiding information overload are essential for their mental health.',
-    famous: [{ name: 'Angelina Jolie', role: 'Actress' }, { name: 'Kanye West', role: 'Musician' }, { name: 'Marilyn Monroe', role: 'Icon' }],
+    famous: [{ name: 'Marilyn Monroe', role: 'Actress' }, { name: 'Kanye West', role: 'Artist' }, { name: 'Angelina Jolie', role: 'Actress' }],
     compatibility: [
-      { sign: 'Libra', level: 92, emoji: '♎' }, { sign: 'Aquarius', level: 90, emoji: '♒' },
-      { sign: 'Aries', level: 80, emoji: '♈' }, { sign: 'Leo', level: 78, emoji: '♌' },
-      { sign: 'Virgo', level: 45, emoji: '♍' }, { sign: 'Pisces', level: 40, emoji: '♓' },
+      { sign: 'Libra', level: 95, emoji: '♎' }, { sign: 'Aquarius', level: 90, emoji: '♒' },
+      { sign: 'Aries', level: 82, emoji: '♈' }, { sign: 'Leo', level: 78, emoji: '♌' },
+      { sign: 'Pisces', level: 38, emoji: '♓' }, { sign: 'Virgo', level: 35, emoji: '♍' },
     ],
-    affirmation: 'My mind is a universe of infinite possibilities and I embrace every facet of myself.',
-    mantra: 'I think. I connect. I evolve.',
+    affirmation: 'I embrace all parts of myself and communicate my truth with clarity and grace.',
+    mantra: 'I think. I connect. I adapt.',
   },
   Cancer: {
     symbol: '♋', element: 'Water', quality: 'Cardinal', ruler: 'Moon',
-    dates: 'Jun 21 – Jul 22', color: '#7FDBFF', stone: 'Ruby',
+    dates: 'Jun 21 – Jul 22', color: '#00BFFF', stone: 'Pearl',
     day: 'Monday', numbers: [2, 3, 15], colors: ['White', 'Silver', 'Sea green'],
-    traits: ['Intuitive', 'Caring', 'Protective', 'Emotional', 'Moody'],
-    strengths: ['Empathetic', 'Loyal', 'Imaginative', 'Perseverant', 'Nurturing'],
-    weaknesses: ['Moody', 'Clingy', 'Suspicious', 'Manipulative', 'Insecure'],
-    description: 'Cancer is the nurturer of the zodiac. Ruled by the Moon, they are deeply emotional, intuitive, and connected to home and family. Their empathy is their superpower.',
-    love: 'Cancer loves with fierce devotion. They create warm, safe homes for their partners. They need emotional security and will reciprocate with unwavering loyalty.',
-    career: 'Nursing, teaching, real estate, food, and creative arts suit Cancer. They shine in roles where they can care for others or work from home.',
-    health: 'The stomach and breasts are Cancer\'s sensitive areas. Emotional health directly impacts physical wellbeing — therapy, journaling, and creative expression are vital.',
-    famous: [{ name: 'Meryl Streep', role: 'Actress' }, { name: 'Tom Hanks', role: 'Actor' }, { name: 'Ariana Grande', role: 'Singer' }],
+    traits: ['Intuitive', 'Emotional', 'Nurturing', 'Protective', 'Moody'],
+    strengths: ['Compassionate', 'Loyal', 'Intuitive', 'Imaginative', 'Persuasive'],
+    weaknesses: ['Moody', 'Pessimistic', 'Suspicious', 'Manipulative', 'Insecure'],
+    description: 'Cancer is the nurturer of the zodiac. Ruled by the Moon, they are deeply intuitive and sentimental, valuing home, family, and emotional security above all else.',
+    love: 'Cancer loves with their whole heart. They are incredibly devoted and nurturing partners who create a warm, loving home. They need emotional security and deep loyalty in return.',
+    career: 'Healthcare, education, real estate, and hospitality suit Cancer. They thrive in roles where they can care for others and build lasting emotional connections.',
+    health: 'The chest, breasts, and stomach are Cancer\'s sensitive areas. Emotional wellbeing directly affects their physical health — journaling and therapy are highly beneficial.',
+    famous: [{ name: 'Princess Diana', role: 'Royalty' }, { name: 'Ariana Grande', role: 'Singer' }, { name: 'Elon Musk', role: 'Entrepreneur' }],
     compatibility: [
-      { sign: 'Scorpio', level: 95, emoji: '♏' }, { sign: 'Pisces', level: 92, emoji: '♓' },
-      { sign: 'Taurus', level: 85, emoji: '♉' }, { sign: 'Virgo', level: 80, emoji: '♍' },
-      { sign: 'Aries', level: 40, emoji: '♈' }, { sign: 'Libra', level: 38, emoji: '♎' },
+      { sign: 'Scorpio', level: 97, emoji: '♏' }, { sign: 'Pisces', level: 92, emoji: '♓' },
+      { sign: 'Taurus', level: 84, emoji: '♉' }, { sign: 'Virgo', level: 79, emoji: '♍' },
+      { sign: 'Aries', level: 38, emoji: '♈' }, { sign: 'Libra', level: 33, emoji: '♎' },
     ],
-    affirmation: 'I honor my feelings and create a sanctuary of love wherever I go.',
-    mantra: 'I feel. I protect. I nurture.',
+    affirmation: 'I honor my emotions as my greatest strength and create safe spaces for love to grow.',
+    mantra: 'I feel. I nurture. I protect.',
   },
   Leo: {
     symbol: '♌', element: 'Fire', quality: 'Fixed', ruler: 'Sun',
-    dates: 'Jul 23 – Aug 22', color: '#FF851B', stone: 'Peridot',
-    day: 'Sunday', numbers: [1, 3, 10], colors: ['Gold', 'Orange', 'Red'],
-    traits: ['Charismatic', 'Creative', 'Generous', 'Dramatic', 'Proud'],
-    strengths: ['Confident', 'Ambitious', 'Loyal', 'Encouraging', 'Natural performer'],
-    weaknesses: ['Arrogant', 'Stubborn', 'Self-centered', 'Attention-seeking', 'Domineering'],
-    description: 'Leo is the royalty of the zodiac. Ruled by the Sun, they radiate warmth, confidence, and magnetism. Born to lead, Leos light up every room they enter.',
-    love: 'Leo loves grandly and passionately. They need admiration and appreciation. In return, they are fiercely loyal and will make their partner feel like the most special person alive.',
-    career: 'Performance arts, management, politics, and entrepreneurship are perfect for Leo. They thrive with an audience and in leadership positions.',
-    health: 'The heart and spine are Leo\'s domain. Maintaining a healthy ego and managing stress around recognition is key. Yoga and dance keep them vibrant.',
-    famous: [{ name: 'Barack Obama', role: 'President' }, { name: 'Coco Chanel', role: 'Designer' }, { name: 'Jennifer Lopez', role: 'Artist' }],
+    dates: 'Jul 23 – Aug 22', color: '#FF851B', stone: 'Ruby',
+    day: 'Sunday', numbers: [1, 3, 10], colors: ['Gold', 'Orange', 'Purple'],
+    traits: ['Generous', 'Warm-hearted', 'Cheerful', 'Humorous', 'Arrogant'],
+    strengths: ['Creative', 'Passionate', 'Generous', 'Warm-hearted', 'Cheerful'],
+    weaknesses: ['Arrogant', 'Stubborn', 'Self-centered', 'Lazy', 'Inflexible'],
+    description: 'Leo is the royalty of the zodiac. Ruled by the Sun, Leos radiate warmth, confidence, and charisma wherever they go. They are natural performers who light up every room.',
+    love: 'Leo loves grandly and dramatically. They are generous, loyal partners who shower their loved ones with affection and expect the same devotion in return.',
+    career: 'Entertainment, leadership, politics, and entrepreneurship suit Leo. They shine in roles where they can lead, inspire, and receive recognition for their talents.',
+    health: 'The heart, spine, and back are Leo\'s sensitive areas. Regular exercise and creative outlets are essential to channel their abundant energy and maintain vitality.',
+    famous: [{ name: 'Barack Obama', role: 'Politician' }, { name: 'Madonna', role: 'Artist' }, { name: 'Jennifer Lopez', role: 'Entertainer' }],
     compatibility: [
-      { sign: 'Aries', level: 95, emoji: '♈' }, { sign: 'Sagittarius', level: 90, emoji: '♐' },
-      { sign: 'Gemini', level: 82, emoji: '♊' }, { sign: 'Libra', level: 80, emoji: '♎' },
-      { sign: 'Scorpio', level: 42, emoji: '♏' }, { sign: 'Taurus', level: 38, emoji: '♉' },
+      { sign: 'Aries', level: 95, emoji: '♈' }, { sign: 'Sagittarius', level: 92, emoji: '♐' },
+      { sign: 'Gemini', level: 83, emoji: '♊' }, { sign: 'Libra', level: 79, emoji: '♎' },
+      { sign: 'Scorpio', level: 40, emoji: '♏' }, { sign: 'Taurus', level: 36, emoji: '♉' },
     ],
-    affirmation: 'I shine my light boldly, inspiring everyone around me to do the same.',
-    mantra: 'I will. I create. I inspire.',
+    affirmation: 'I shine my light boldly and generously, inspiring everyone I meet.',
+    mantra: 'I will. I create. I shine.',
   },
   Virgo: {
     symbol: '♍', element: 'Earth', quality: 'Mutable', ruler: 'Mercury',
     dates: 'Aug 23 – Sep 22', color: '#01FF70', stone: 'Sapphire',
-    day: 'Wednesday', numbers: [5, 14, 15], colors: ['Grey', 'Beige', 'Pale yellow'],
-    traits: ['Analytical', 'Meticulous', 'Reliable', 'Modest', 'Perfectionist'],
-    strengths: ['Hardworking', 'Practical', 'Loyal', 'Kind', 'Detail-oriented'],
-    weaknesses: ['Critical', 'Overly cautious', 'Anxious', 'Inflexible', 'Self-critical'],
-    description: 'Virgo is the perfectionist of the zodiac. Ruled by Mercury, they have sharp analytical minds and a deep need for order. Their dedication and precision are unmatched.',
-    love: 'Virgo shows love through acts of service. They pay attention to every detail about their partner. They need time to open up emotionally but are deeply devoted once committed.',
-    career: 'Healthcare, editing, data analysis, accounting, and research are ideal for Virgo. They thrive where precision and systematic thinking are valued.',
-    health: 'The digestive system is Virgo\'s sensitive area. A clean diet, routine, and managing anxiety through mindfulness are essential for their wellbeing.',
+    day: 'Wednesday', numbers: [5, 14, 23], colors: ['Green', 'White', 'Yellow'],
+    traits: ['Analytical', 'Hardworking', 'Practical', 'Diligent', 'Critical'],
+    strengths: ['Loyal', 'Analytical', 'Kind', 'Hardworking', 'Practical'],
+    weaknesses: ['Shyness', 'Worry', 'Overly critical', 'All work no play', 'Perfectionist'],
+    description: 'Virgo is the perfectionist of the zodiac. Ruled by Mercury, they are precise, methodical, and deeply service-oriented — always striving to improve themselves and the world around them.',
+    love: 'Virgo expresses love through acts of service and attention to detail. They are devoted partners who show care through practical gestures and genuine interest in their partner\'s wellbeing.',
+    career: 'Healthcare, research, writing, data analysis, and accounting suit Virgo. They excel in environments that reward precision, critical thinking, and systematic approaches.',
+    health: 'The digestive system and intestines are Virgo\'s sensitive areas. A clean diet, regular routines, and mindfulness practices are essential for their health.',
     famous: [{ name: 'Beyoncé', role: 'Artist' }, { name: 'Keanu Reeves', role: 'Actor' }, { name: 'Mother Teresa', role: 'Humanitarian' }],
     compatibility: [
-      { sign: 'Taurus', level: 95, emoji: '♉' }, { sign: 'Capricorn', level: 93, emoji: '♑' },
-      { sign: 'Cancer', level: 85, emoji: '♋' }, { sign: 'Scorpio', level: 82, emoji: '♏' },
-      { sign: 'Gemini', level: 45, emoji: '♊' }, { sign: 'Sagittarius', level: 38, emoji: '♐' },
+      { sign: 'Taurus', level: 95, emoji: '♉' }, { sign: 'Capricorn', level: 92, emoji: '♑' },
+      { sign: 'Cancer', level: 85, emoji: '♋' }, { sign: 'Scorpio', level: 80, emoji: '♏' },
+      { sign: 'Sagittarius', level: 38, emoji: '♐' }, { sign: 'Gemini', level: 34, emoji: '♊' },
     ],
-    affirmation: 'I trust my process and embrace the beauty in imperfection.',
+    affirmation: 'I trust my process, embrace imperfection, and find beauty in the details of life.',
     mantra: 'I analyze. I serve. I perfect.',
   },
   Libra: {
     symbol: '♎', element: 'Air', quality: 'Cardinal', ruler: 'Venus',
-    dates: 'Sep 23 – Oct 22', color: '#F012BE', stone: 'Opal',
-    day: 'Friday', numbers: [4, 6, 13], colors: ['Pink', 'Blue', 'Lavender'],
-    traits: ['Diplomatic', 'Gracious', 'Fair-minded', 'Social', 'Indecisive'],
-    strengths: ['Charming', 'Just', 'Cooperative', 'Idealistic', 'Peacemaker'],
-    weaknesses: ['Indecisive', 'Avoids confrontation', 'Self-pitying', 'Easily influenced', 'Vain'],
-    description: 'Libra is the diplomat of the zodiac. Ruled by Venus, they seek harmony, balance, and beauty in all things. Their greatest gift is seeing every side of every situation.',
-    love: 'Libra is the ultimate romantic partner — thoughtful, attentive, and devoted to creating a beautiful relationship. They need partnership and flourish with someone who values fairness.',
-    career: 'Law, diplomacy, design, fashion, and public relations suit Libra perfectly. They excel in roles that require mediation and aesthetic sensibility.',
-    health: 'The kidneys and lower back are Libra\'s sensitive areas. Avoiding excess and maintaining inner balance through yoga and art is key for their health.',
+    dates: 'Sep 23 – Oct 22', color: '#FF69B4', stone: 'Opal',
+    day: 'Friday', numbers: [4, 6, 13], colors: ['Pink', 'Blue', 'Green'],
+    traits: ['Diplomatic', 'Fair-minded', 'Social', 'Idealistic', 'Indecisive'],
+    strengths: ['Cooperative', 'Diplomatic', 'Gracious', 'Fair-minded', 'Social'],
+    weaknesses: ['Indecisive', 'Avoids confrontation', 'Self-pitying', 'Grudge-holder', 'People-pleaser'],
+    description: 'Libra is the diplomat of the zodiac. Ruled by Venus, they are charming, gracious, and deeply committed to justice and harmony in all areas of life.',
+    love: 'Libra is a natural romantic who thrives in partnership. They are attentive, charming partners who create beautiful relationships built on mutual respect and intellectual connection.',
+    career: 'Law, diplomacy, design, counseling, and the arts suit Libra. They excel in roles requiring negotiation, aesthetic judgment, and the ability to see all sides.',
+    health: 'The kidneys and lower back are Libra\'s sensitive areas. Balance is key — avoiding excess in all things, from diet to work, maintains their health and harmony.',
     famous: [{ name: 'Kim Kardashian', role: 'Media personality' }, { name: 'Will Smith', role: 'Actor' }, { name: 'Gandhi', role: 'Leader' }],
     compatibility: [
       { sign: 'Gemini', level: 92, emoji: '♊' }, { sign: 'Aquarius', level: 88, emoji: '♒' },
@@ -194,7 +194,7 @@ const ZODIAC_DATA: Record<string, {
   },
   Capricorn: {
     symbol: '♑', element: 'Earth', quality: 'Cardinal', ruler: 'Saturn',
-    dates: 'Dec 22 – Jan 19', color: '#111111', stone: 'Garnet',
+    dates: 'Dec 22 – Jan 19', color: '#AAAAAA', stone: 'Garnet',
     day: 'Saturday', numbers: [4, 8, 13], colors: ['Brown', 'Black', 'Dark green'],
     traits: ['Disciplined', 'Ambitious', 'Patient', 'Cautious', 'Reserved'],
     strengths: ['Responsible', 'Self-controlled', 'Practical', 'Persistent', 'Masterful'],
@@ -202,47 +202,47 @@ const ZODIAC_DATA: Record<string, {
     description: 'Capricorn is the achiever of the zodiac. Ruled by Saturn, they are masters of discipline, ambition, and long-term thinking. They build empires, one determined step at a time.',
     love: 'Capricorn is a serious, committed partner. They take love as seriously as their career. They show affection through stability and providing, and need a partner who respects their ambitions.',
     career: 'Finance, government, architecture, management, and law suit Capricorn perfectly. They excel in structured environments where hard work leads to prestigious results.',
-    health: 'The bones, knees, and joints are Capricorn\'s sensitive areas. Avoiding overwork and incorporating rest and play into their routine is essential for longevity.',
-    famous: [{ name: 'Michelle Obama', role: 'Former First Lady' }, { name: 'Denzel Washington', role: 'Actor' }, { name: 'Dolly Parton', role: 'Musician' }],
+    health: 'The bones, knees, and joints are Capricorn\'s sensitive areas. Regular exercise, calcium-rich diet, and work-life balance are essential for their longevity.',
+    famous: [{ name: 'Michelle Obama', role: 'Former First Lady' }, { name: 'LeBron James', role: 'Athlete' }, { name: 'Jeff Bezos', role: 'Entrepreneur' }],
     compatibility: [
-      { sign: 'Taurus', level: 92, emoji: '♉' }, { sign: 'Virgo', level: 90, emoji: '♍' },
-      { sign: 'Scorpio', level: 82, emoji: '♏' }, { sign: 'Pisces', level: 78, emoji: '♓' },
-      { sign: 'Aries', level: 35, emoji: '♈' }, { sign: 'Libra', level: 32, emoji: '♎' },
+      { sign: 'Taurus', level: 94, emoji: '♉' }, { sign: 'Virgo', level: 91, emoji: '♍' },
+      { sign: 'Scorpio', level: 83, emoji: '♏' }, { sign: 'Pisces', level: 77, emoji: '♓' },
+      { sign: 'Aries', level: 37, emoji: '♈' }, { sign: 'Libra', level: 33, emoji: '♎' },
     ],
-    affirmation: 'I am capable of achieving everything I set my disciplined mind to accomplish.',
-    mantra: 'I achieve. I build. I master.',
+    affirmation: 'I climb with patience and intention, knowing that every step leads to my destiny.',
+    mantra: 'I use. I master. I achieve.',
   },
   Aquarius: {
-    symbol: '♒', element: 'Air', quality: 'Fixed', ruler: 'Uranus & Saturn',
-    dates: 'Jan 20 – Feb 18', color: '#00B4D8', stone: 'Amethyst',
+    symbol: '♒', element: 'Air', quality: 'Fixed', ruler: 'Uranus',
+    dates: 'Jan 20 – Feb 18', color: '#7FDBFF', stone: 'Amethyst',
     day: 'Saturday', numbers: [4, 7, 11], colors: ['Blue', 'Silver', 'Turquoise'],
-    traits: ['Innovative', 'Independent', 'Humanitarian', 'Eccentric', 'Aloof'],
-    strengths: ['Original', 'Progressive', 'Visionary', 'Loyal to ideals', 'Intellectual'],
-    weaknesses: ['Detached', 'Stubborn', 'Unpredictable', 'Rebellious', 'Cold'],
-    description: 'Aquarius is the visionary of the zodiac. Ruled by Uranus, they are ahead of their time — original thinkers who dream of a better world and march to the beat of their own drum.',
-    love: 'Aquarius needs a best friend as a partner. They are loyal but struggle with emotional intimacy. Intellectual connection, shared ideals, and freedom are non-negotiables.',
-    career: 'Technology, science, humanitarian work, aviation, and astrology suit Aquarius. They excel in fields where innovation and independent thinking are valued.',
-    health: 'The ankles, shins, and circulatory system are Aquarius\'s sensitive areas. Group sports, social activities, and avoiding emotional isolation support their wellbeing.',
-    famous: [{ name: 'Oprah Winfrey', role: 'Media mogul' }, { name: 'Harry Styles', role: 'Musician' }, { name: 'Ellen DeGeneres', role: 'Comedian' }],
+    traits: ['Progressive', 'Original', 'Independent', 'Humanitarian', 'Inventive'],
+    strengths: ['Visionary', 'Intellectual', 'Original', 'Humanitarian', 'Independent'],
+    weaknesses: ['Emotionally detached', 'Unpredictable', 'Stubborn', 'Aloof', 'Extremist'],
+    description: 'Aquarius is the visionary of the zodiac. Ruled by Uranus, they are progressive, independent thinkers who are deeply committed to humanity and the future. They march to their own cosmic beat.',
+    love: 'Aquarius needs intellectual connection above all in love. They are loyal but need space and freedom. A partner who respects their individuality and shares their vision will win their heart.',
+    career: 'Technology, science, humanitarian work, activism, and innovation suit Aquarius. They thrive in roles where they can challenge the status quo and create positive change.',
+    health: 'The ankles, calves, and circulatory system are Aquarius\'s sensitive areas. Group sports, unique fitness regimens, and staying socially active support their wellbeing.',
+    famous: [{ name: 'Oprah Winfrey', role: 'Media mogul' }, { name: 'Ellen DeGeneres', role: 'Entertainer' }, { name: 'Cristiano Ronaldo', role: 'Athlete' }],
     compatibility: [
-      { sign: 'Gemini', level: 90, emoji: '♊' }, { sign: 'Libra', level: 88, emoji: '♎' },
-      { sign: 'Sagittarius', level: 80, emoji: '♐' }, { sign: 'Aries', level: 75, emoji: '♈' },
-      { sign: 'Scorpio', level: 35, emoji: '♏' }, { sign: 'Taurus', level: 32, emoji: '♉' },
+      { sign: 'Gemini', level: 93, emoji: '♊' }, { sign: 'Libra', level: 89, emoji: '♎' },
+      { sign: 'Sagittarius', level: 82, emoji: '♐' }, { sign: 'Aries', level: 76, emoji: '♈' },
+      { sign: 'Taurus', level: 37, emoji: '♉' }, { sign: 'Scorpio', level: 33, emoji: '♏' },
     ],
-    affirmation: 'I am a revolutionary force of light, changing the world through my unique vision.',
+    affirmation: 'I embrace my uniqueness and use my vision to create a better world for all.',
     mantra: 'I know. I innovate. I liberate.',
   },
   Pisces: {
-    symbol: '♓', element: 'Water', quality: 'Mutable', ruler: 'Neptune & Jupiter',
-    dates: 'Feb 19 – Mar 20', color: '#74C0FC', stone: 'Aquamarine',
-    day: 'Thursday', numbers: [3, 9, 12], colors: ['Sea green', 'Lavender', 'White'],
-    traits: ['Empathetic', 'Intuitive', 'Artistic', 'Gentle', 'Dreamy'],
-    strengths: ['Compassionate', 'Selfless', 'Wise', 'Romantic', 'Mystical'],
-    weaknesses: ['Escapist', 'Naive', 'Overly trusting', 'Sad', 'Boundary-less'],
-    description: 'Pisces is the mystic of the zodiac. Ruled by Neptune, they exist between worlds — deeply intuitive, endlessly compassionate, and connected to the spiritual realm.',
-    love: 'Pisces is the ultimate romantic — dreamy, devoted, and deeply loving. They give their whole heart. They need a grounded partner who appreciates their sensitivity and doesn\'t exploit it.',
-    career: 'Arts, music, healing, spiritual work, film, and medicine suit Pisces. They thrive where they can use their empathy, intuition, and creative gifts.',
-    health: 'The feet and lymphatic system are Pisces\'s sensitive areas. Grounding practices, limiting alcohol, adequate sleep, and spiritual routines are vital for their wellbeing.',
+    symbol: '♓', element: 'Water', quality: 'Mutable', ruler: 'Neptune',
+    dates: 'Feb 19 – Mar 20', color: '#0074D9', stone: 'Aquamarine',
+    day: 'Thursday', numbers: [3, 9, 12], colors: ['Sea green', 'Lavender', 'Purple'],
+    traits: ['Compassionate', 'Artistic', 'Intuitive', 'Gentle', 'Wise'],
+    strengths: ['Compassionate', 'Artistic', 'Intuitive', 'Gentle', 'Wise'],
+    weaknesses: ['Fearful', 'Overly trusting', 'Sad', 'Desire to escape reality', 'Victim mentality'],
+    description: 'Pisces is the dreamer of the zodiac. Ruled by Neptune, they are deeply compassionate, artistic, and intuitive souls who experience life through an emotional and spiritual lens.',
+    love: 'Pisces loves unconditionally and with their entire soul. They are romantic, empathetic partners who will sacrifice greatly for the ones they love. They need deep emotional connection and loyalty.',
+    career: 'Arts, music, healing professions, spirituality, and charity work suit Pisces. They thrive when their work has deep meaning and allows them to express their creativity and compassion.',
+    health: 'The feet and lymphatic system are Pisces\'s sensitive areas. Swimming, yoga, and creative outlets are healing. They must guard against escapism and be mindful of substance use.',
     famous: [{ name: 'Rihanna', role: 'Artist' }, { name: 'Albert Einstein', role: 'Scientist' }, { name: 'Steve Jobs', role: 'Visionary' }],
     compatibility: [
       { sign: 'Scorpio', level: 95, emoji: '♏' }, { sign: 'Cancer', level: 92, emoji: '♋' },
@@ -260,13 +260,12 @@ const ELEMENT_COLORS: Record<string, string> = {
 
 export default function MyZodiacPage() {
   const { profile } = useAuth();
-  
-  const calculatedSign = profile?.date_of_birth ? getZodiacSign(profile.date_of_birth) : null;
-  const userSign = calculatedSign || profile?.zodiac_sign || 'Aries';
-  
-  const sign = ZODIAC_DATA[userSign] ? userSign : 'Aries';
-  const data = ZODIAC_DATA[sign];
-  
+
+  const sign = (profile?.date_of_birth ? getZodiacSign(profile.date_of_birth) : null)
+    || profile?.zodiac_sign
+    || 'Aries';
+  const data = ZODIAC_DATA[sign] || ZODIAC_DATA['Aries'];
+
   const [activeTab, setActiveTab] = useState<'overview' | 'love' | 'career' | 'health'>('overview');
   const [showCompatibility, setShowCompatibility] = useState(false);
   const [savedAffirmation, setSavedAffirmation] = useState(false);
@@ -295,7 +294,6 @@ export default function MyZodiacPage() {
         <div className="absolute inset-0 opacity-10" style={{
           backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(123,97,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,191,255,0.3) 0%, transparent 50%)',
         }} />
-        {/* Orbiting dot */}
         <div className="absolute left-1/2 top-1/2 w-0 h-0" style={{ marginLeft: '-1px', marginTop: '-1px' }}>
           <div className="w-2 h-2 rounded-full" style={{
             background: data.color, boxShadow: `0 0 8px ${data.color}`,
@@ -336,168 +334,140 @@ export default function MyZodiacPage() {
             }}>{t}</span>
           ))}
         </div>
-        {/* Mini personality radar using bars */}
         <div className="mt-5 space-y-2">
           {[
-            { label: 'Emotional Depth', value: data.element === 'Water' ? 90 : data.element === 'Fire' ? 65 : 55 },
-            { label: 'Intellectual Drive', value: data.element === 'Air' ? 90 : data.quality === 'Fixed' ? 70 : 60 },
-            { label: 'Creative Energy', value: data.element === 'Fire' ? 88 : data.ruler.includes('Venus') ? 85 : 60 },
-            { label: 'Social Magnetism', value: data.quality === 'Cardinal' ? 80 : data.element === 'Air' ? 85 : 60 },
-            { label: 'Spiritual Depth', value: data.element === 'Water' ? 92 : data.ruler.includes('Neptune') ? 95 : 55 },
-          ].map(item => (
-            <div key={item.label} className="flex items-center gap-3">
-              <span className="text-xs text-white/50 w-36 flex-shrink-0">{item.label}</span>
-              <div className="flex-1 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <div className="h-full rounded-full compat-bar" style={{
-                  width: `${item.value}%`,
-                  background: `linear-gradient(90deg, ${data.color}88, ${data.color})`,
-                }} />
+            { label: 'Emotional Depth',    value: data.element === 'Water' ? 90 : data.element === 'Fire' ? 65 : 55 },
+            { label: 'Intellectual Drive', value: data.element === 'Air'   ? 90 : data.quality === 'Fixed' ? 70 : 60 },
+            { label: 'Physical Energy',    value: data.element === 'Fire'  ? 92 : data.element === 'Earth' ? 70 : 65 },
+            { label: 'Social Magnetism',   value: data.element === 'Air'   ? 88 : data.element === 'Fire'  ? 82 : 60 },
+          ].map(bar => (
+            <div key={bar.label} className="flex items-center gap-3">
+              <span className="text-xs text-white/50 w-36 shrink-0">{bar.label}</span>
+              <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <div className="h-full rounded-full" style={{ width: `${bar.value}%`, background: `linear-gradient(90deg, ${data.color}88, ${data.color})` }} />
               </div>
-              <span className="text-xs font-mono" style={{ color: data.color, width: '30px' }}>{item.value}%</span>
+              <span className="text-xs font-bold w-8 text-right" style={{ color: data.color }}>{bar.value}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── 3. LUCKY ELEMENTS */}
-      <div className="rounded-2xl p-6" style={cardBase}>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <span>🍀</span> Your Lucky Elements
-        </h2>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <div className="text-2xl mb-2">🔢</div>
-            <div className="text-xs text-white/50 mb-1">Lucky Numbers</div>
-            <div className="flex justify-center gap-2">
-              {data.numbers.map(n => (
-                <span key={n} className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{
-                  background: `${data.color}30`, color: data.color, border: `1px solid ${data.color}60`,
-                }}>{n}</span>
-              ))}
-            </div>
-          </div>
-          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <div className="text-2xl mb-2">🎨</div>
-            <div className="text-xs text-white/50 mb-1">Power Colors</div>
-            <div className="flex flex-col gap-1">
-              {data.colors.map(c => (
-                <span key={c} className="text-xs text-purple-200">{c}</span>
-              ))}
-            </div>
-          </div>
-          <div className="text-center p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <div className="text-2xl mb-2">📅</div>
-            <div className="text-xs text-white/50 mb-1">Power Day</div>
-            <div className="text-white font-semibold mt-2" style={{ color: data.color }}>{data.day}</div>
-          </div>
+      {/* ── 3. STRENGTHS & WEAKNESSES */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="rounded-2xl p-5" style={cardBase}>
+          <h3 className="text-sm font-semibold text-green-400 mb-3">💪 Strengths</h3>
+          <ul className="space-y-2">
+            {data.strengths.map(s => (
+              <li key={s} className="flex items-center gap-2 text-sm text-white/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />{s}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-2xl p-5" style={cardBase}>
+          <h3 className="text-sm font-semibold text-red-400 mb-3">⚠️ Weaknesses</h3>
+          <ul className="space-y-2">
+            {data.weaknesses.map(w => (
+              <li key={w} className="flex items-center gap-2 text-sm text-white/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />{w}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* ── 4. STRENGTHS & WEAKNESSES TABS */}
+      {/* ── 4. TABBED DEEP DIVE */}
       <div className="rounded-2xl p-6" style={cardBase}>
-        <div className="flex gap-3 mb-5">
-          {(['overview', 'love', 'career', 'health'] as const).map(t => (
-            <button key={t} onClick={() => setActiveTab(t)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all border ${activeTab === t ? 'tab-active text-white' : 'text-white/50 border-transparent hover:text-white/80'}`}
-              style={{ border: '1px solid transparent' }}>
-              {t === 'overview' ? '🌟 Overview' : t === 'love' ? '❤️ Love' : t === 'career' ? '💼 Career' : '🌿 Health'}
+        <div className="flex gap-2 mb-5 flex-wrap">
+          {(['overview', 'love', 'career', 'health'] as const).map(tab => (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-lg text-sm font-medium border capitalize transition-all ${activeTab === tab ? 'tab-active text-white' : 'border-transparent text-white/50 hover:text-white/80'}`}>
+              {tab === 'overview' ? '🌟' : tab === 'love' ? '❤️' : tab === 'career' ? '💼' : '🌿'} {tab}
             </button>
           ))}
         </div>
-        <p className="text-white/75 text-sm leading-relaxed">
-          {activeTab === 'overview' ? data.description : activeTab === 'love' ? data.love : activeTab === 'career' ? data.career : data.health}
+        <p className="text-white/80 text-sm leading-relaxed">
+          {activeTab === 'overview' ? data.description
+            : activeTab === 'love'     ? data.love
+            : activeTab === 'career'   ? data.career
+            :                            data.health}
         </p>
-        {activeTab === 'overview' && (
-          <div className="grid grid-cols-2 gap-4 mt-5">
-            <div>
-              <div className="text-xs text-green-400 uppercase tracking-wider mb-2">✅ Strengths</div>
-              {data.strengths.map(s => (
-                <div key={s} className="flex items-center gap-2 text-sm text-white/75 py-1">
-                  <span className="text-green-400 text-xs">▸</span>{s}
-                </div>
-              ))}
-            </div>
-            <div>
-              <div className="text-xs text-red-400 uppercase tracking-wider mb-2">⚠️ Challenges</div>
-              {data.weaknesses.map(w => (
-                <div key={w} className="flex items-center gap-2 text-sm text-white/75 py-1">
-                  <span className="text-red-400 text-xs">▸</span>{w}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ── 5. COMPATIBILITY */}
       <div className="rounded-2xl p-6" style={cardBase}>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-            <span>💞</span> Compatibility
-          </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">💞 Compatibility</h2>
           <button onClick={() => setShowCompatibility(!showCompatibility)}
-            className="text-xs px-3 py-1 rounded-lg" style={{
-              background: 'rgba(123,97,255,0.2)', color: '#a78bfa',
-              border: '1px solid rgba(123,97,255,0.3)',
-            }}>
-            {showCompatibility ? 'Hide' : 'See All'}
+            className="text-xs text-purple-400 hover:text-purple-300">
+            {showCompatibility ? 'Hide' : 'Show all'}
           </button>
         </div>
         <div className="space-y-3">
-          {(showCompatibility ? data.compatibility : data.compatibility.slice(0, 3)).map(c => (
+          {data.compatibility.slice(0, showCompatibility ? data.compatibility.length : 3).map(c => (
             <div key={c.sign} className="flex items-center gap-3">
-              <span className="text-xl w-8 text-center">{c.emoji}</span>
-              <span className="text-sm text-white/80 w-24">{c.sign}</span>
-              <div className="flex-1 h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <div className="h-full rounded-full compat-bar" style={{
+              <span className="text-xl w-8">{c.emoji}</span>
+              <span className="text-sm text-white/70 w-24">{c.sign}</span>
+              <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <div className="compat-bar h-full rounded-full" style={{
                   width: `${c.level}%`,
-                  background: c.level >= 80 ? 'linear-gradient(90deg, #22c55e, #86efac)' :
-                    c.level >= 60 ? 'linear-gradient(90deg, #f59e0b, #fcd34d)' :
-                    'linear-gradient(90deg, #ef4444, #fca5a5)',
+                  background: c.level >= 80 ? 'linear-gradient(90deg,#22c55e88,#22c55e)' : c.level >= 60 ? 'linear-gradient(90deg,#f59e0b88,#f59e0b)' : 'linear-gradient(90deg,#ef444488,#ef4444)',
                 }} />
               </div>
-              <span className="text-xs font-mono text-white/60 w-10 text-right">{c.level}%</span>
+              <span className="text-xs font-bold w-10 text-right" style={{ color: c.level >= 80 ? '#22c55e' : c.level >= 60 ? '#f59e0b' : '#ef4444' }}>{c.level}%</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── 6. FAMOUS PEOPLE */}
+      {/* ── 6. LUCKY DETAILS */}
       <div className="rounded-2xl p-6" style={cardBase}>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <span>⭐</span> Famous {sign}s
-        </h2>
-        <div className="grid grid-cols-3 gap-3">
-          {data.famous.map(f => (
-            <div key={f.name} className="text-center p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-              <div className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-xl font-bold" style={{
-                background: `${data.color}30`, border: `1px solid ${data.color}60`, color: data.color,
-              }}>{f.name[0]}</div>
-              <div className="text-sm text-white font-medium">{f.name}</div>
-              <div className="text-xs text-white/40">{f.role}</div>
+        <h2 className="text-lg font-semibold text-white mb-4">🍀 Lucky Details</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            { label: 'Lucky Day',     value: data.day },
+            { label: 'Lucky Stone',   value: data.stone },
+            { label: 'Lucky Numbers', value: data.numbers.join(', ') },
+            { label: 'Lucky Colors',  value: data.colors.join(', ') },
+            { label: 'Element',       value: data.element },
+            { label: 'Ruling Planet', value: data.ruler },
+          ].map(item => (
+            <div key={item.label} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${data.color}22` }}>
+              <span className="text-xs text-white/40 block mb-1">{item.label}</span>
+              <span className="text-sm font-medium" style={{ color: data.color }}>{item.value}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── 7. DAILY AFFIRMATION */}
+      {/* ── 7. FAMOUS PEOPLE */}
+      <div className="rounded-2xl p-6" style={cardBase}>
+        <h2 className="text-lg font-semibold text-white mb-4">⭐ Famous {sign}s</h2>
+        <div className="flex flex-wrap gap-3">
+          {data.famous.map(f => (
+            <div key={f.name} className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{ background: `${data.color}15`, border: `1px solid ${data.color}33` }}>
+              <div>
+                <p className="text-sm font-medium text-white">{f.name}</p>
+                <p className="text-xs text-white/50">{f.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 8. AFFIRMATION */}
       <div className="rounded-2xl p-6 text-center" style={{
-        background: `radial-gradient(ellipse, ${data.color}15, rgba(10,1,24,0.8))`,
-        border: `1px solid ${data.color}30`,
+        background: `radial-gradient(ellipse at center, ${data.color}15, rgba(10,1,24,0.9))`,
+        border: `1px solid ${data.color}33`,
       }}>
-        <div className="text-3xl mb-3" style={{ animation: 'shimmer 3s ease infinite' }}>✦</div>
-        <h2 className="text-sm uppercase tracking-widest text-white/50 mb-3">Today's Affirmation</h2>
-        <p className="text-white text-lg leading-relaxed mb-2" style={{ fontFamily: 'Cinzel, serif' }}>
-          "{data.affirmation}"
-        </p>
-        <p className="text-sm italic mb-4" style={{ color: data.color }}>{data.mantra}</p>
-        <button onClick={() => setSavedAffirmation(!savedAffirmation)}
-          className="px-5 py-2 rounded-xl text-sm font-medium transition-all" style={{
-            background: savedAffirmation ? `${data.color}40` : 'rgba(255,255,255,0.08)',
-            border: `1px solid ${savedAffirmation ? data.color : 'rgba(255,255,255,0.15)'}`,
-            color: savedAffirmation ? data.color : 'rgba(255,255,255,0.7)',
-          }}>
-          {savedAffirmation ? '✓ Affirmation Saved' : '+ Save to Journal'}
+        <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Daily Affirmation</p>
+        <p className="text-white text-lg font-medium italic mb-2">"{data.affirmation}"</p>
+        <p className="text-sm font-bold" style={{ color: data.color }}>{data.mantra}</p>
+        <button
+          onClick={() => { setSavedAffirmation(true); setTimeout(() => setSavedAffirmation(false), 2000); }}
+          className="mt-4 px-5 py-2 rounded-full text-sm font-medium transition-all"
+          style={{ background: `${data.color}25`, color: data.color, border: `1px solid ${data.color}44` }}>
+          {savedAffirmation ? '✓ Saved!' : '🔖 Save Affirmation'}
         </button>
       </div>
     </div>

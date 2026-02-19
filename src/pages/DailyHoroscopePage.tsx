@@ -1,165 +1,163 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getZodiacSign } from '../utils/zodiac';
 
+// ── Static daily readings keyed by sign name ──────────────────────────────
 const DAILY_READINGS: Record<string, {
   overall: string; love: string; career: string; health: string; spiritual: string;
-  warning: string; tip: string;
-  scores: { overall: number; love: number; career: number; health: number; energy: number };
-  lucky: { number: number; color: string; time: string; direction: string; crystal: string };
+  tip: string; scores: Record<string, number>; lucky: Record<string, string | number>;
   planet: string; planetEffect: string;
 }> = {
   Aries: {
-    overall: 'The cosmic fire burns bright in your chart today, Aries. Mars, your ruling planet, forms a powerful trine with Jupiter, amplifying your natural boldness and drive. This is a day to initiate, to lead, and to take decisive action on projects you\'ve been contemplating. Your energy is electric — channel it wisely.',
-    love: 'A magnetic energy surrounds you today. Singles may encounter someone intriguing through unexpected channels — perhaps a mutual friend or work setting. Couples should plan something spontaneous and adventurous. Your passion is contagious, but remember to slow down and listen.',
-    career: 'Mercury aligns favorably with your sun today, sharpening your communication. A bold presentation or proposal could turn heads. Don\'t second-guess your instincts — your first idea is likely your best. A mentor or senior figure may offer valuable guidance.',
-    health: 'Your physical energy is peaking today. An intense workout session, martial arts, or any competitive sport will feel exhilarating. Watch your head — the body part ruled by Aries — and avoid risky physical activities after 6 PM when energy may dip.',
-    spiritual: 'The universe is aligning your desires with your path. Take 10 minutes today to visualize your goals as already achieved. Your manifestation power is amplified under today\'s planetary configuration.',
-    warning: 'Impulsiveness may lead you to burn bridges unnecessarily. Pause before sending that message in anger — wait 24 hours.',
-    tip: 'Red garments or accessories boost your confidence and attract positive energy today.',
-    scores: { overall: 85, love: 78, career: 90, health: 82, energy: 95 },
-    lucky: { number: 8, color: 'Crimson Red', time: '2:00 PM – 4:00 PM', direction: 'East', crystal: 'Bloodstone' },
-    planet: 'Mars ♂', planetEffect: 'Mars empowers your ambition and courage today. Use this energy to initiate, not react.',
+    overall: 'The universe is igniting your pioneering spirit today, Aries. Mars supercharges your drive, making this a powerful day for bold moves and new beginnings. Trust your instincts — they are sharper than ever.',
+    love: 'Passion runs high today. Express your feelings directly; your honesty will be magnetic. Singles may have a charged encounter. Couples benefit from spontaneous adventure together.',
+    career: 'Your competitive edge is razor-sharp. Take the lead on that project you\'ve been eyeing. Colleagues respond well to your enthusiasm. An important opportunity may arise before the day ends.',
+    health: 'High energy demands physical outlet. A vigorous workout will do wonders. Watch for impulsiveness that could lead to minor injuries — channel that fire into focused exercise.',
+    spiritual: 'Fire meditations and working with red crystals like carnelian align your energy. Your warrior spirit is awakened — call upon your inner strength to face any challenge.',
+    tip: 'Start something new today. The cosmic energy strongly supports initiating bold actions.',
+    scores: { overall: 88, love: 82, career: 91, health: 78, energy: 95 },
+    lucky: { number: 9, color: 'Crimson', time: '8:00 AM – 10:00 AM', direction: 'East', crystal: 'Carnelian' },
+    planet: 'Mars ♂', planetEffect: 'Mars fuels your ambition and courage, making you unstoppable today.',
   },
   Taurus: {
-    overall: 'Venus, your ruling planet, casts a warm golden glow over your chart today. There\'s a beautiful harmony between your desire for comfort and the universe\'s offerings. Financial matters look favorable, and creative projects are especially blessed. Allow yourself to indulge in beauty and pleasure without guilt.',
-    love: 'Romance is in the air for Taurus today. Venus\'s influence makes you irresistibly attractive. A long-established relationship deepens beautifully today — share a meal, a walk, or a tender conversation. Singles may meet someone with shared tastes and values.',
-    career: 'Your practical nature serves you well today. A financial decision you\'ve been deliberating becomes clearer. Trust your instinct for value — you can spot a good deal or a bad investment better than anyone. A creative project gets the green light.',
-    health: 'Your body craves nourishment and beauty today. A healthy, indulgent meal, aromatherapy, or a massage would do wonders. Neck and throat exercises are beneficial. Avoid rushing — let your body move at its natural, grounded pace.',
-    spiritual: 'Nature is calling you today. Even 20 minutes barefoot on grass or soil will dramatically shift your energy. You\'re a child of the Earth — reconnect with her today.',
-    warning: 'Stubbornness could cost you an opportunity. Be willing to adapt your plans when new information arrives.',
-    tip: 'Surround yourself with fresh flowers or plants today to elevate your vibration and attract abundance.',
-    scores: { overall: 82, love: 90, career: 78, health: 85, energy: 75 },
-    lucky: { number: 6, color: 'Emerald Green', time: '10:00 AM – 12:00 PM', direction: 'South', crystal: 'Rose Quartz' },
-    planet: 'Venus ♀', planetEffect: 'Venus amplifies beauty, love, and material abundance. Open your hands to receive.',
+    overall: 'Venus wraps your day in a warm, sensual glow, Taurus. Beauty, pleasure, and meaningful connections are highlighted. This is a day to savor the finer things and appreciate what you have built.',
+    love: 'Romance is tender and deeply satisfying today. Express love through thoughtful gestures. Long-term partners feel especially close. Singles attract admirers through their natural warmth and sensuality.',
+    career: 'Steady persistence pays off beautifully today. A financial decision made now will serve you well long-term. Your patience and reliability impress those in positions of authority.',
+    health: 'Your body craves nourishment and rest. A wholesome meal and time in nature will restore you completely. Avoid overindulgence — your body is asking for quality, not quantity.',
+    spiritual: 'Earth-based practices and time in gardens or forests deeply nourish your soul today. Work with green crystals like malachite to amplify abundance energy.',
+    tip: 'Indulge one genuine pleasure today — your soul needs beauty and satisfaction.',
+    scores: { overall: 84, love: 92, career: 79, health: 85, energy: 72 },
+    lucky: { number: 6, color: 'Emerald', time: '2:00 PM – 4:00 PM', direction: 'South', crystal: 'Malachite' },
+    planet: 'Venus ♀', planetEffect: 'Venus surrounds you with beauty, luxury, and the sweetness of life today.',
   },
   Gemini: {
-    overall: 'Mercury, your cosmic ruler, stations direct today, clearing communication fog that has been affecting your wit and clarity. Ideas that were stuck begin flowing freely again. Your natural brilliance is on full display — engage with people, share your thoughts, and let your curiosity lead the way.',
-    love: 'Your charm is at its peak today, Gemini. Conversations flow beautifully and your humor is magnetic. Plan something intellectually stimulating with a partner or potential love interest — a museum, a debate, or a thought-provoking film. Authenticity is more attractive than performance today.',
-    career: 'Writing, presenting, negotiating — any Mercury-ruled activity is supercharged today. Send the pitch, make the call, schedule the meeting. Your words carry unusual persuasive power. A creative collaboration with a colleague could yield surprising results.',
-    health: 'The lungs and nervous system need attention today. Deep breathing exercises, a short meditation, or a walk in fresh air will recalibrate your mental chatter. Avoid overstimulation from screens and social media after 8 PM.',
-    spiritual: 'The universe is sending you messages through synchronicities today — repeated numbers, overheard conversations, and dreams. Pay attention to these cosmic whispers.',
-    warning: 'Your tendency to say yes to everything may overload your schedule. Practice the art of graceful refusal.',
-    tip: 'Carry or wear yellow today to sharpen your intellect and attract fortunate conversations.',
-    scores: { overall: 88, love: 82, career: 95, health: 72, energy: 88 },
-    lucky: { number: 5, color: 'Sunlit Yellow', time: '8:00 AM – 10:00 AM', direction: 'West', crystal: 'Clear Quartz' },
-    planet: 'Mercury ☿', planetEffect: 'Mercury sharpens your mind and tongue. Your words today have the power to open doors.',
+    overall: 'Mercury electrifies your already brilliant mind today, Gemini. Ideas flow effortlessly and conversations open doors. This is an exceptional day for communication, learning, and making connections.',
+    love: 'Wit and words are your most powerful tools in love today. A meaningful conversation deepens a connection. Singles sparkle with charm — your mind captivates as much as your smile.',
+    career: 'Networking and communication are your superpowers today. A pitch, presentation, or important conversation goes exceptionally well. Your versatility impresses everyone in the room.',
+    health: 'Mental overstimulation is the only risk today. Schedule quiet time between social engagements. Breathing exercises and short walks between tasks keep your nervous system balanced.',
+    spiritual: 'Your mind is a portal to the divine today. Journaling, automatic writing, or oracle cards reveal profound insights. Yellow citrine amplifies your mental clarity and joy.',
+    tip: 'Make that important call or send that message today — Mercury\'s energy guarantees it lands well.',
+    scores: { overall: 87, love: 80, career: 93, health: 74, energy: 88 },
+    lucky: { number: 5, color: 'Yellow', time: '10:00 AM – 12:00 PM', direction: 'West', crystal: 'Citrine' },
+    planet: 'Mercury ☿', planetEffect: 'Mercury sharpens your intellect and accelerates all forms of communication today.',
   },
   Cancer: {
-    overall: 'The Moon, your celestial ruler, forms a rare and powerful conjunction with Neptune today, deepening your already extraordinary intuition to near-psychic levels. You may sense things before they happen. Trust these impressions completely. Emotional intelligence is your greatest asset today — use it.',
-    love: 'Your nurturing energy is radiant today and deeply felt by those around you. Partners will feel unusually seen and held. Take the lead in creating an intimate, cozy atmosphere — cook together, light candles, share memories. Singles may connect with someone who sees their depth.',
-    career: 'Your intuition in professional matters is uncannily accurate today. Trust that gut feeling about a colleague\'s true intentions or a project\'s viability. Creative and empathetic roles shine especially bright. A conversation with a client or patient could be deeply meaningful.',
-    health: 'The stomach and digestive system need gentle attention today. Warm, nourishing foods, herbal teas, and minimal processed food will support your wellbeing. Emotional stress manifests physically for Cancer — a short journaling session releases tension.',
-    spiritual: 'Water holds special medicine for you today. A bath, ocean, lake, or even holding a glass of water mindfully will cleanse your energy field and restore your sense of peace.',
-    warning: 'Your sensitivity may cause you to misread a neutral comment as criticism. Pause before withdrawing into your shell — ask for clarification first.',
-    tip: 'A white or silver accessory today amplifies your lunar connection and offers emotional protection.',
-    scores: { overall: 80, love: 95, career: 72, health: 78, energy: 70 },
-    lucky: { number: 2, color: 'Moonlit Silver', time: '6:00 PM – 8:00 PM', direction: 'North', crystal: 'Moonstone' },
-    planet: 'Moon ☽', planetEffect: 'The Moon heightens emotion and intuition. Your inner world is your superpower today.',
+    overall: 'The Moon cradles you in heightened intuition today, Cancer. Your emotional radar is extraordinarily precise — trust every feeling and instinct. Home, family, and deep connections take center stage.',
+    love: 'Emotional intimacy reaches beautiful new depths today. Share your inner world openly; vulnerability creates unbreakable bonds. Family matters bring unexpected joy and warmth.',
+    career: 'Your intuition about colleagues and clients is spot-on today. Creative work and projects involving care, hospitality, or nurturing others excel. Trust your gut on business decisions.',
+    health: 'Emotional and physical wellbeing are deeply linked today. Honor your feelings fully — suppressed emotions manifest as physical tension. A nurturing bath or gentle yoga works wonders.',
+    spiritual: 'Moon rituals and water-based practices are especially powerful today. Meditate near water or with moonstone to amplify your already heightened psychic sensitivity.',
+    tip: 'Create a sacred, cozy space today. Your home is your sanctuary and your power source.',
+    scores: { overall: 82, love: 95, career: 76, health: 80, energy: 70 },
+    lucky: { number: 2, color: 'Silver', time: '8:00 PM – 10:00 PM', direction: 'North', crystal: 'Moonstone' },
+    planet: 'Moon ☽', planetEffect: 'The Moon amplifies your intuition and emotional intelligence to extraordinary levels.',
   },
   Leo: {
-    overall: 'The Sun, your magnificent ruler, makes an auspicious aspect to Jupiter today, expanding your natural radiance to fill every room you enter. This is your moment to shine without apology. Opportunities for recognition, creative expression, and leadership are abundant. Claim your throne.',
-    love: 'Romance burns gloriously for Leo today. Your warmth and confidence are irresistible. Plan something grand and memorable with your partner — Leo deserves the theatrical. Singles may find someone drawn to their light like a moth to a flame. Be generous with your affection.',
-    career: 'A leadership moment arrives today — seize it with both hands. Your ability to inspire and galvanize a team is at its absolute peak. Creative projects, presentations, and pitches are blessed. Don\'t understate your contributions in meetings — your ideas deserve the spotlight.',
-    health: 'The heart and spine are energized today. Vigorous exercise, especially dance or sports with an audience element, will elevate your mood spectacularly. Avoid caffeine overload — your energy is already abundant and may tip into anxiety.',
-    spiritual: 'You are being called to step into your spiritual authority. What gifts has the universe given you that you\'ve been hiding? Today, offer them to the world without fear.',
-    warning: 'Pride may close a door that generosity would open. Acknowledge others\' contributions genuinely before taking the stage.',
-    tip: 'Gold jewelry or accents today amplify your solar energy and attract admiration and opportunity.',
-    scores: { overall: 92, love: 88, career: 95, health: 85, energy: 98 },
-    lucky: { number: 1, color: 'Radiant Gold', time: '12:00 PM – 2:00 PM', direction: 'East', crystal: 'Citrine' },
-    planet: 'Sun ☀️', planetEffect: 'The Sun illuminates your gifts and amplifies your natural magnetism. Shine boldly.',
+    overall: 'The Sun blazes through your chart today, Leo, filling you with radiant confidence and creative fire. You are at your most magnetic and powerful — the whole world notices your light.',
+    love: 'Your charisma is irresistible today. Grand romantic gestures land perfectly. Couples reignite passion through playfulness and celebration. Singles command attention effortlessly — embrace it.',
+    career: 'Leadership opportunities come to you naturally today. Your vision inspires others and your confidence opens doors. A moment of recognition or praise affirms your hard work.',
+    health: 'Vitality is sky-high. Channel this solar energy into physical activity you genuinely enjoy — dance, sports, or anything that makes your heart sing and your body move with joy.',
+    spiritual: 'Creative expression IS your spiritual practice today. Art, performance, and heartfelt generosity connect you to the divine. Work with sunstone or golden topaz to amplify your solar energy.',
+    tip: 'Step into the spotlight today — you were made for this moment.',
+    scores: { overall: 93, love: 89, career: 95, health: 88, energy: 97 },
+    lucky: { number: 1, color: 'Gold', time: '12:00 PM – 2:00 PM', direction: 'East', crystal: 'Sunstone' },
+    planet: 'Sun ☀️', planetEffect: 'The Sun amplifies your natural radiance, leadership, and creative power to its peak.',
   },
   Virgo: {
-    overall: 'Mercury, your meticulous ruler, forms a precise sextile with Saturn today, creating the perfect cosmic conditions for organized, disciplined, highly productive work. Your analytical powers are sharper than ever. Complex problems that have stumped others yield to your systematic approach. This is your day.',
-    love: 'Your thoughtfulness in love is deeply appreciated today. Small, carefully considered gestures — a note, a favorite snack, remembering something they mentioned weeks ago — mean everything to your partner. Singles may meet someone through shared intellectual interest or a health-related activity.',
-    career: 'Detail-oriented work is powerfully favored today. Editing, analysis, health-related tasks, and systematic problem-solving all yield excellent results. A review or audit you\'ve been anxious about turns out better than expected. Your thoroughness will be noted and rewarded.',
-    health: 'The digestive system responds beautifully to a clean, nutritious diet today. Try fermented foods or probiotics. A mindful eating practice — eating without screens or distractions — will transform your relationship with food. Your body is speaking; listen carefully.',
-    spiritual: 'Service is your spiritual path, Virgo. Volunteering, helping a neighbor, or simply lending your skills to someone in need will fill your soul in ways no meditation can. Your spiritual growth happens through daily acts of humble service.',
-    warning: 'Perfectionism may paralyze progress today. Done and improved is better than perfect and unfinished. Submit the work.',
-    tip: 'Green vegetables and herbal teas are especially powerful allies today for your body and mind.',
-    scores: { overall: 85, love: 72, career: 92, health: 90, energy: 80 },
-    lucky: { number: 5, color: 'Sage Green', time: '7:00 AM – 9:00 AM', direction: 'North', crystal: 'Jasper' },
-    planet: 'Mercury ☿', planetEffect: 'Mercury empowers your analytical mind. Precision and attention to detail bring breakthroughs today.',
+    overall: 'Mercury sharpens your already keen analytical mind today, Virgo. Details that others miss are crystal clear to you. This is an ideal day for planning, organizing, and problem-solving with surgical precision.',
+    love: 'Small, thoughtful gestures speak volumes in love today. Your attentiveness makes your partner feel deeply cherished. Singles attract through genuine helpfulness and intelligent conversation.',
+    career: 'Your eye for detail catches a critical error or reveals an important insight. Process improvements and systematic approaches bring measurable results. Colleagues appreciate your thoroughness.',
+    health: 'Your mind-body connection is especially strong today. A clean, nutritious meal and an organized environment dramatically improve your energy. Digestive health responds well to mindful eating.',
+    spiritual: 'Service and ritual are your spiritual languages today. Organizing a sacred space, crafting detailed intentions, or helping someone in need connects you deeply to the divine.',
+    tip: 'Fix or improve one system or process today — your precision brings outsized rewards.',
+    scores: { overall: 85, love: 77, career: 92, health: 88, energy: 80 },
+    lucky: { number: 5, color: 'Forest Green', time: '7:00 AM – 9:00 AM', direction: 'South', crystal: 'Jade' },
+    planet: 'Mercury ☿', planetEffect: 'Mercury activates your analytical genius and brings extraordinary clarity to complex problems.',
   },
   Libra: {
-    overall: 'Venus, your gracious ruler, makes a beautiful trine to Jupiter today, expanding your already considerable charm to almost irresistible levels. Beauty, harmony, and justice are the themes of your day. Relationships flourish, creative projects blossom, and you\'ll find yourself naturally mediating conflicts that others can\'t navigate.',
-    love: 'This is one of your most romantically blessed days of the season. Make a move if you\'ve been hesitating — the cosmos fully support it. Couples should plan something beautiful together — an art gallery, a fine dinner, or dressing up for no reason. Your love life is your greatest work of art.',
-    career: 'Your ability to see multiple perspectives and craft elegant solutions is in highest demand today. Legal matters, negotiations, and partnership agreements are all favored. A creative collaboration you\'ve been pursuing gains momentum. Your aesthetic sensibility solves a practical problem.',
-    health: 'The kidneys and lower back need love today. Plenty of water, avoiding excess sugar, and a gentle yoga or stretching session support your balance. Your health is directly tied to relational harmony — resolve any simmering conflicts for a physical boost.',
-    spiritual: 'Beauty is your spiritual language. Create something beautiful today — arrange flowers, write poetry, curate a playlist. When you create beauty, you channel the divine directly.',
-    warning: 'People-pleasing could lead you to overcommit. One sincere "no" today is worth ten grudging "yeses".',
-    tip: 'Pink or lavender clothing today amplifies your Venusian energy and makes you utterly magnetic.',
-    scores: { overall: 88, love: 98, career: 82, health: 78, energy: 85 },
-    lucky: { number: 6, color: 'Rose Pink', time: '3:00 PM – 5:00 PM', direction: 'West', crystal: 'Opal' },
-    planet: 'Venus ♀', planetEffect: 'Venus and Jupiter unite to make today one of your most fortunate days of the month.',
+    overall: 'Venus drapes your day in elegance and harmony today, Libra. Beauty, balance, and meaningful partnerships are highlighted. Negotiations, collaborations, and creative projects all flourish under this cosmic grace.',
+    love: 'Romance is exquisitely balanced and mutually fulfilling today. A heart-to-heart conversation brings beautiful resolution or deeper understanding. Singles encounter someone who matches their ideals.',
+    career: 'Partnerships and negotiations reach favorable outcomes today. Your diplomatic skills broker solutions that everyone celebrates. Creative collaborations produce work of exceptional quality.',
+    health: 'Balance is your medicine today. Ensure equal portions of activity and rest, social time and solitude, nourishment and movement. Your kidneys respond well to increased water intake.',
+    spiritual: 'Beauty itself is a spiritual practice for you today. Surround yourself with art, music, and harmony. Rose quartz and pink tourmaline support your heart chakra beautifully.',
+    tip: 'Seek beauty in every interaction today — your ability to find it is your greatest gift.',
+    scores: { overall: 86, love: 93, career: 84, health: 79, energy: 78 },
+    lucky: { number: 6, color: 'Rose Pink', time: '3:00 PM – 5:00 PM', direction: 'West', crystal: 'Rose Quartz' },
+    planet: 'Venus ♀', planetEffect: 'Venus fills your interactions with grace, charm, and the power to create lasting harmony.',
   },
   Scorpio: {
-    overall: 'Pluto, your transformational ruler, is in an intense mutual reception with Mars today, creating a day of profound power and psychological insight. You see through facades effortlessly. Deep truths that others have been hiding reveal themselves to your penetrating perception. Use this power with integrity — it\'s formidable.',
-    love: 'Emotional intimacy reaches extraordinary depths today. A vulnerable conversation with your partner could permanently strengthen your bond. Singles may encounter someone with an unusual, magnetic quality that seems almost fated. Don\'t dismiss what feels inevitable.',
-    career: 'Research, investigation, psychology, finance, and crisis management are all powerfully favored today. Your ability to find hidden information and unearth buried truths is unmatched. A secret you\'ve suspected in the workplace reveals itself — proceed with discretion.',
-    health: 'The reproductive and excretory systems need attention today. Detox practices — a sauna, eliminating sugar or alcohol, or a fasting window — are especially effective. Sexual energy is high; channel it into creative or athletic endeavors if you need focus.',
-    spiritual: 'The veil between worlds is thin for you today. Ancestor work, tarot reading, meditation on death and rebirth, or simply sitting with deep music will take you to powerful places within yourself.',
-    warning: 'The urge to control outcomes may push important people away. Practice radical trust today.',
-    tip: 'Black tourmaline or obsidian in your pocket today provides psychic protection and amplifies your power.',
-    scores: { overall: 90, love: 85, career: 88, health: 75, energy: 92 },
-    lucky: { number: 9, color: 'Midnight Black', time: '9:00 PM – 11:00 PM', direction: 'North', crystal: 'Obsidian' },
-    planet: 'Pluto ♇', planetEffect: 'Pluto deepens your perception and empowers transformation. See beyond the surface today.',
+    overall: 'Pluto intensifies your already formidable perception today, Scorpio. Hidden truths surface, power dynamics shift in your favor, and your ability to transform challenges into victories is at its peak.',
+    love: 'Emotional and physical intimacy reach extraordinary intensity today. Deep vulnerability creates unbreakable bonds. Trust your instincts completely — they reveal what words cannot.',
+    career: 'Research, investigation, and strategic planning yield powerful results today. You uncover information others miss entirely. A power play at work resolves decisively in your favor.',
+    health: 'Intense emotions need healthy physical release today. High-intensity exercise, deep tissue massage, or cathartic creative work transforms tension into vitality and power.',
+    spiritual: 'Shadow work and transformation practices are exceptionally potent today. Work with obsidian or black tourmaline to transmute old wounds into wisdom and authentic power.',
+    tip: 'Face one difficult truth today — your transformation on the other side will be extraordinary.',
+    scores: { overall: 89, love: 91, career: 87, health: 76, energy: 85 },
+    lucky: { number: 8, color: 'Deep Crimson', time: '9:00 PM – 11:00 PM', direction: 'North', crystal: 'Obsidian' },
+    planet: 'Pluto ♇', planetEffect: 'Pluto awakens your power to transform, investigate, and rise from any circumstance.',
   },
   Sagittarius: {
-    overall: 'Jupiter, your abundant ruler, stations direct today after a period of retrograde — and you feel it immediately. Expansion is available on every front. Opportunities that seemed stalled begin moving again. Your natural optimism returns in force. This is the beginning of one of your most fortunate cycles in years.',
-    love: 'Adventure is the love language today, Sagittarius. Plan something unexpected with your partner — a spontaneous trip, an outdoor experience, or a new cuisine. Singles may find a connection through travel, a philosophy class, or a meaningful discussion about life\'s big questions.',
-    career: 'International matters, publishing, higher education, and long-distance projects all receive powerful cosmic support today. Your vision for the future is clearer than it\'s been in months. Present that big idea — Jupiter is amplifying your persuasive optimism to irresistible levels.',
-    health: 'The hips and thighs are energized — an outdoor run, hike, or yoga flow would be exhilarating. Your metabolism is strong today; fuel it with wholesome, colorful foods from various cultures. Avoid overindulging in alcohol, which Jupiter\'s influence can amplify.',
-    spiritual: 'Your higher mind is wide open today. Reading philosophy, listening to a spiritual teacher, or spending time in wide-open natural spaces expands your consciousness profoundly.',
-    warning: 'Overconfidence may lead you to skip important steps or promise more than you can deliver. Ground your enthusiasm with a practical plan.',
-    tip: 'Book that trip, take that class, send that application. Jupiter has opened the door — walk through it.',
-    scores: { overall: 95, love: 80, career: 92, health: 85, energy: 95 },
-    lucky: { number: 3, color: 'Royal Purple', time: '11:00 AM – 1:00 PM', direction: 'East', crystal: 'Turquoise' },
-    planet: 'Jupiter ♃', planetEffect: 'Jupiter stations direct, unleashing a wave of expansion, opportunity, and optimism.',
+    overall: 'Jupiter expands every horizon in your world today, Sagittarius. Opportunities for adventure, learning, and philosophical expansion appear from unexpected directions. Say yes to the journey.',
+    love: 'Adventure and shared laughter are the love languages of today. Plan something spontaneous with your partner. Singles attract through their infectious optimism and fearless authenticity.',
+    career: 'International connections, higher learning, and ambitious projects are strongly favored. A big-picture vision you share today sparks others\' enthusiasm. Expansion is your theme.',
+    health: 'Movement and outdoor activity restore your vitality completely today. A long walk, run, or any physical adventure in nature recharges your spirit and body simultaneously.',
+    spiritual: 'Philosophy, spiritual study, and travel — even through books or meditation — deepen your connection to universal truth today. Turquoise and lapis lazuli expand your higher mind.',
+    tip: 'Follow your curiosity wherever it leads today — Jupiter\'s expansion energy is fully on your side.',
+    scores: { overall: 90, love: 84, career: 88, health: 90, energy: 93 },
+    lucky: { number: 3, color: 'Royal Blue', time: '11:00 AM – 1:00 PM', direction: 'East', crystal: 'Turquoise' },
+    planet: 'Jupiter ♃', planetEffect: 'Jupiter blesses every venture with expansion, abundance, and extraordinary good fortune.',
   },
   Capricorn: {
-    overall: 'Saturn, your disciplined ruler, forms a powerful conjunction with the North Node today, aligning your ambitions with your soul\'s purpose. The hard work you\'ve been doing behind the scenes is being recorded in the cosmic ledger. Recognition may not come today, but the seeds planted now will yield extraordinary harvests.',
-    love: 'Security and commitment are the themes of your love life today. A conversation about the future of your relationship could bring much-needed clarity and solidity. Singles may be drawn to someone mature, established, and serious — someone who shares their long-term vision.',
-    career: 'This is one of your most professionally powerful days of the season. Saturn rewards consistent effort with concrete results. A project milestone is reached, or recognition for previous work arrives. Authority figures and mentors are especially supportive.',
-    health: 'Bones, teeth, and joints are your focus today. Weight-bearing exercises, calcium-rich foods, and ensuring adequate Vitamin D are beneficial. Your discipline makes you excellent at maintaining healthy routines — start one today that you can sustain for years.',
-    spiritual: 'For Capricorn, spiritual practice is the long game. Begin or recommit to a meditation practice today with the intention of doing it every day for 30 days. The mountain climber\'s patience applies to spiritual ascent too.',
-    warning: 'Emotional coldness may close a door that vulnerability would open. Allow yourself to feel — and even show — your feelings today.',
-    tip: 'Dark green or black today conveys authority and attracts the respect and serious attention you deserve.',
-    scores: { overall: 82, love: 70, career: 95, health: 85, energy: 78 },
-    lucky: { number: 8, color: 'Forest Green', time: '6:00 AM – 8:00 AM', direction: 'South', crystal: 'Garnet' },
-    planet: 'Saturn ♄', planetEffect: 'Saturn rewards your discipline and aligns your ambition with your highest purpose today.',
+    overall: 'Saturn rewards your discipline with tangible recognition today, Capricorn. Authority figures take notice of your consistent excellence. Long-term ambitions receive powerful cosmic support.',
+    love: 'Steady devotion and practical gestures communicate love most powerfully today. Make plans for the future with your partner — shared goals deepen commitment beautifully.',
+    career: 'Your expertise and track record open important doors today. A leadership opportunity or significant responsibility is offered. Accept it with the confidence you have earned.',
+    health: 'Structure serves your body well today. Maintain your routines with extra discipline — consistency is your medicine. Your skeletal system benefits from calcium-rich foods and posture awareness.',
+    spiritual: 'Achievement itself is your spiritual path today. Set a meaningful intention and take one concrete step toward your highest goal. Garnet and smoky quartz ground your ambitious energy beautifully.',
+    tip: 'Show up with your full expertise today — the universe is watching and ready to reward you.',
+    scores: { overall: 86, love: 78, career: 94, health: 82, energy: 77 },
+    lucky: { number: 8, color: 'Charcoal', time: '6:00 AM – 8:00 AM', direction: 'South', crystal: 'Garnet' },
+    planet: 'Saturn ♄', planetEffect: 'Saturn rewards your hard work, discipline, and long-term commitment with lasting recognition.',
   },
   Aquarius: {
-    overall: 'Uranus, your revolutionary ruler, makes an exact trine to your sun today, delivering a sudden flash of insight that could change your trajectory. Lightning-bolt ideas, unexpected encounters, and thrilling breaks from routine are all possible. The universe is conspiring to liberate you from what no longer serves your evolution.',
-    love: 'Unconventional and exciting — that\'s the love energy today. Break the routine with your partner; try something neither of you has done before. Singles may find someone through technology, a progressive community, or a humanitarian cause. Authenticity is your most attractive quality.',
-    career: 'Innovation is your superpower today. The strange, counterintuitive idea you\'ve been hesitant to voice is exactly what\'s needed. Technology, social change, and group projects are especially favored. A collaborative effort with like-minded visionaries could spark something world-changing.',
-    health: 'The ankles and circulatory system need attention. Get your blood moving — dancing, cycling, or jumping rope are excellent. Electric and unexpected social interactions boost your wellbeing as powerfully as any supplement. Isolation is your enemy today.',
-    spiritual: 'You are a channel for cosmic downloads today. Keep a voice memo app or notebook close — ideas will arrive fully formed and brilliant. These aren\'t random thoughts; they\'re transmissions.',
-    warning: 'Emotional detachment could wound someone you care about. Remember that your logical explanations can feel cold to emotional signs. Soften your delivery.',
-    tip: 'Electric blue or turquoise today amplifies your Uranian frequency and attracts synchronicities.',
-    scores: { overall: 90, love: 78, career: 88, health: 80, energy: 92 },
-    lucky: { number: 11, color: 'Electric Blue', time: '4:00 PM – 6:00 PM', direction: 'West', crystal: 'Labradorite' },
-    planet: 'Uranus ♅', planetEffect: 'Uranus delivers breakthroughs and liberating insights. Embrace the unexpected today.',
+    overall: 'Uranus sparks a flash of genius in your mind today, Aquarius. An unconventional idea or breakthrough approach arrives with sudden, electric clarity. Your most innovative thinking is your greatest gift.',
+    love: 'Intellectual connection is the deepest form of intimacy for you today. A stimulating conversation sparks genuine attraction. Your authenticity and uniqueness draw exactly the right people close.',
+    career: 'Technology, innovation, and collaborative projects surge forward with brilliant momentum. An unconventional solution to a persistent problem earns admiration from unexpected quarters.',
+    health: 'Social connection and community activities boost your wellbeing significantly today. Group fitness, team sports, or any activity shared with others energizes you on every level.',
+    spiritual: 'Your connection to collective consciousness is heightened today. Humanitarian acts, community service, and working toward a vision larger than yourself align you with your highest purpose.',
+    tip: 'Share your most unconventional idea today — the world needs your revolutionary thinking.',
+    scores: { overall: 88, love: 81, career: 92, health: 79, energy: 87 },
+    lucky: { number: 11, color: 'Electric Blue', time: '4:00 PM – 6:00 PM', direction: 'West', crystal: 'Amethyst' },
+    planet: 'Uranus ♅', planetEffect: 'Uranus electrifies your genius, bringing sudden insights and revolutionary breakthroughs.',
   },
   Pisces: {
-    overall: 'Neptune, your mystical ruler, makes a rare exact conjunction with the Moon today, creating the most spiritually potent 24 hours Pisces will experience this season. Your intuition, empathy, and creative vision are operating at divine levels. Trust every impression that arises — you are receiving cosmic transmissions.',
-    love: 'Love today transcends the ordinary for Pisces. A connection that feels fated, a conversation that goes soul-deep, or a moment of pure wordless understanding with someone you love — these are the gifts available to you. Open your heart completely and let the cosmic love flow through you.',
-    career: 'Creative, healing, and spiritual work are powerfully blessed today. If your career involves art, music, therapy, medicine, or spiritual guidance, you are operating with divine assistance. A creative project that has felt stalled suddenly opens into inspired flow. Say yes to the muse.',
-    health: 'The feet and lymphatic system need gentle care. A foot massage, warm bath with sea salt, or barefoot walk on natural ground will be profoundly restorative. Dreams tonight will be especially vivid and meaningful — keep a journal by your bed.',
-    spiritual: 'You are the closest to the divine of all signs today, and today is even more amplified than usual. Meditation, prayer, channel writing, or any form of spiritual practice will yield profound experiences. The veil is gossamer thin.',
-    warning: 'Your boundaries may dissolve completely today, leaving you vulnerable to energy vampires. Protect your energy with intention and physical symbols like crystals or salt.',
-    tip: 'Ocean imagery, sea sounds, or any water element near you today activates your most powerful spiritual gifts.',
+    overall: 'Neptune wraps your day in a luminous, dreamy glow today, Pisces. Your intuition, creativity, and spiritual sensitivity are operating at their absolute peak. Magic is real and it is happening for you.',
+    love: 'Romantic connection transcends the ordinary today — soulmate energy is strongly present. Let your guard down completely and allow yourself to be seen. Unconditional love flows both ways.',
+    career: 'Creative projects, artistic work, and anything requiring empathy or imagination flourish beautifully today. Your ability to feel what others need makes you invaluable in team settings.',
+    health: 'Water is your greatest healer today — swim, take a healing bath, or simply be near a natural water source. Rest is equally sacred. Your dreams tonight may carry important guidance.',
+    spiritual: 'Your psychic channels are wide open today. Meditation, dream work, and any intuitive practice yields extraordinary clarity and guidance. Protect your energy with intention and amethyst.',
+    tip: 'Trust the magical, impossible-seeming thing that keeps calling to your soul today.',
     scores: { overall: 85, love: 95, career: 80, health: 75, energy: 80 },
     lucky: { number: 12, color: 'Sea Foam', time: '7:00 PM – 9:00 PM', direction: 'North', crystal: 'Amethyst' },
-    planet: 'Neptune ♆', planetEffect: 'Neptune dissolves boundaries between worlds, opening you to divine inspiration and love.',
+    planet: 'Neptune ♆', planetEffect: 'Neptune dissolves boundaries between worlds, opening you to divine inspiration and unconditional love.',
   },
 };
 
 const MOODS = ['✨ Inspired', '🔥 Energized', '😌 Peaceful', '💪 Determined', '🌊 Emotional', '😴 Low Energy', '🌟 Grateful', '😤 Frustrated'];
 
+const SIGN_SYMBOLS: Record<string, string> = {
+  Aries: '♈', Taurus: '♉', Gemini: '♊', Cancer: '♋', Leo: '♌', Virgo: '♍',
+  Libra: '♎', Scorpio: '♏', Sagittarius: '♐', Capricorn: '♑', Aquarius: '♒', Pisces: '♓',
+};
+
 export default function DailyHoroscopePage() {
   const { profile } = useAuth();
-  const sign = profile?.zodiac_sign || 'Aries';
+
+  // AuthContext guarantees profile.zodiac_sign is correct — no fallback to Aries needed
+  const sign = (profile?.date_of_birth ? getZodiacSign(profile.date_of_birth) : null)
+    || profile?.zodiac_sign
+    || 'Aries';
   const reading = DAILY_READINGS[sign] || DAILY_READINGS['Aries'];
+
   const [activeSection, setActiveSection] = useState<'overall' | 'love' | 'career' | 'health' | 'spiritual'>('overall');
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showLucky, setShowLucky] = useState(false);
@@ -167,20 +165,20 @@ export default function DailyHoroscopePage() {
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
-  const sectionText: Record<string, string> = {
-    overall: reading.overall, love: reading.love, career: reading.career,
-    health: reading.health, spiritual: reading.spiritual,
-  };
-
-  const scoreColor = (n: number) =>
-    n >= 85 ? '#22c55e' : n >= 70 ? '#f59e0b' : '#ef4444';
+  const scoreColor = (n: number) => n >= 85 ? '#22c55e' : n >= 70 ? '#f59e0b' : '#ef4444';
 
   const handleShare = () => {
+    if (!reading || !sign) return;
     const text = `My ${sign} horoscope today: "${reading.overall.slice(0, 120)}..." — Powered by AstroSoul ✨`;
     navigator.clipboard.writeText(text).then(() => {
       setCopiedShare(true);
       setTimeout(() => setCopiedShare(false), 2500);
     });
+  };
+
+  const sectionText: Record<string, string> = {
+    overall: reading.overall, love: reading.love, career: reading.career,
+    health: reading.health, spiritual: reading.spiritual,
   };
 
   return (
@@ -192,38 +190,40 @@ export default function DailyHoroscopePage() {
         .section-btn { transition: all .2s; }
       `}</style>
 
-      {/* ── 1. DATE + SIGN BANNER */}
+      {/* ── 1. HEADER */}
       <div className="rounded-3xl p-6 relative overflow-hidden" style={{
         background: 'linear-gradient(135deg, rgba(45,27,105,0.9), rgba(10,1,24,0.95))',
         border: '1px solid rgba(123,97,255,0.3)',
-        animation: 'glow-pulse 4s ease infinite',
       }}>
-        <div className="absolute top-0 right-0 w-64 h-64 opacity-10" style={{
+        <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-20" style={{
           background: 'radial-gradient(circle, #7B61FF, transparent)',
-          borderRadius: '50%', transform: 'translate(30%, -30%)',
+          transform: 'translate(30%,-30%)',
         }} />
-        <div className="flex justify-between items-start relative z-10">
+        <div className="relative z-10 flex items-start justify-between">
           <div>
-            <p className="text-purple-400 text-xs tracking-widest uppercase mb-1">{today}</p>
-            <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Cinzel, serif' }}>Daily Reading</h1>
-            <p className="text-purple-300 mt-1">for <span className="text-white font-semibold">{sign}</span> ·{' '}
-              <span className="text-yellow-400 text-sm">{reading.planet}</span></p>
-          </div>
-          <div className="text-right">
-            <div className="text-5xl" style={{ filter: 'drop-shadow(0 0 15px rgba(123,97,255,0.8))' }}>
-              {sign === 'Aries' ? '♈' : sign === 'Taurus' ? '♉' : sign === 'Gemini' ? '♊' : sign === 'Cancer' ? '♋' :
-               sign === 'Leo' ? '♌' : sign === 'Virgo' ? '♍' : sign === 'Libra' ? '♎' : sign === 'Scorpio' ? '♏' :
-               sign === 'Sagittarius' ? '♐' : sign === 'Capricorn' ? '♑' : sign === 'Aquarius' ? '♒' : '♓'}
+            <p className="text-xs tracking-widest uppercase text-purple-400 mb-1">{today}</p>
+            <h1 className="text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Cinzel, serif' }}>
+              Daily Horoscope
+            </h1>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-2xl">{SIGN_SYMBOLS[sign] || '✦'}</span>
+              <span className="text-cyan-400 font-semibold">{sign}</span>
+              <span className="text-purple-400 text-sm">· {reading.planet}</span>
             </div>
           </div>
+          <button onClick={handleShare}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{ background: 'rgba(123,97,255,0.2)', border: '1px solid rgba(123,97,255,0.4)', color: '#c4b5fd' }}>
+            {copiedShare ? '✓ Copied!' : '📤 Share'}
+          </button>
         </div>
         <div className="mt-4 p-3 rounded-xl relative z-10" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <p className="text-sm text-purple-200 italic">⚡ {reading.planetEffect}</p>
         </div>
       </div>
 
-      {/* ── 2. ENERGY SCORES (5 categories) */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
+      {/* ── 2. ENERGY SCORES */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">📊 Today's Cosmic Scores</h2>
         <div className="space-y-3">
           {(Object.entries(reading.scores) as [string, number][]).map(([key, val]) => (
@@ -241,8 +241,8 @@ export default function DailyHoroscopePage() {
         </div>
       </div>
 
-      {/* ── 3. SECTION READER (Overall, Love, Career, Health, Spiritual) */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
+      {/* ── 3. SECTION READER */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="flex gap-2 flex-wrap mb-5">
           {(['overall', 'love', 'career', 'health', 'spiritual'] as const).map(s => (
             <button key={s} onClick={() => setActiveSection(s)}
@@ -256,99 +256,57 @@ export default function DailyHoroscopePage() {
         <p className="text-white/80 text-sm leading-relaxed">{sectionText[activeSection]}</p>
       </div>
 
-      {/* ── 4. LUCKY ELEMENTS REVEAL */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">🍀 Lucky Elements</h2>
+      {/* ── 4. LUCKY DETAILS */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">🍀 Lucky Details</h2>
           <button onClick={() => setShowLucky(!showLucky)}
-            className="text-xs px-3 py-1.5 rounded-lg transition-all"
-            style={{ background: showLucky ? 'rgba(123,97,255,0.3)' : 'rgba(255,255,255,0.08)', color: '#a78bfa', border: '1px solid rgba(123,97,255,0.3)' }}>
-            {showLucky ? 'Hide' : 'Reveal ✨'}
+            className="text-xs text-purple-400 hover:text-purple-300">
+            {showLucky ? 'Hide' : 'Reveal'}
           </button>
         </div>
         {showLucky && (
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: '🔢', label: 'Lucky Number', value: reading.lucky.number.toString() },
-              { icon: '🎨', label: 'Power Color', value: reading.lucky.color },
-              { icon: '⏰', label: 'Power Hour', value: reading.lucky.time },
-              { icon: '🧭', label: 'Direction', value: reading.lucky.direction },
-              { icon: '💎', label: 'Crystal Ally', value: reading.lucky.crystal },
-            ].map(item => (
-              <div key={item.label} className="p-4 rounded-xl flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <span className="text-2xl">{item.icon}</span>
-                <div>
-                  <div className="text-xs text-white/40">{item.label}</div>
-                  <div className="text-sm font-semibold text-purple-200">{item.value}</div>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {Object.entries(reading.lucky).map(([key, val]) => (
+              <div key={key} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(123,97,255,0.2)' }}>
+                <span className="text-xs text-white/40 block capitalize mb-1">{key}</span>
+                <span className="text-sm font-medium text-cyan-400">{String(val)}</span>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* ── 5. COSMIC WARNING + TIP */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl p-5" style={{
-          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '16px',
-        }}>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg">⚠️</span>
-            <h3 className="text-sm font-semibold text-red-300">Cosmic Caution</h3>
-          </div>
-          <p className="text-sm text-white/70">{reading.warning}</p>
-        </div>
-        <div className="rounded-2xl p-5" style={{
-          background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '16px',
-        }}>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg">💡</span>
-            <h3 className="text-sm font-semibold text-green-300">Today's Cosmic Tip</h3>
-          </div>
-          <p className="text-sm text-white/70">{reading.tip}</p>
-        </div>
+      {/* ── 5. DAILY TIP */}
+      <div className="rounded-2xl p-5 text-center" style={{
+        background: 'linear-gradient(135deg, rgba(123,97,255,0.15), rgba(10,1,24,0.9))',
+        border: '1px solid rgba(123,97,255,0.3)',
+      }}>
+        <p className="text-purple-400 text-xs uppercase tracking-widest mb-2">Cosmic Tip</p>
+        <p className="text-white/85 text-sm leading-relaxed italic">✨ {reading.tip}</p>
       </div>
 
       {/* ── 6. MOOD TRACKER */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-2">🌡️ How Are You Feeling?</h2>
-        <p className="text-xs text-white/40 mb-4">Track your cosmic mood today</p>
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">🌡️ How Are You Feeling?</h2>
         <div className="flex flex-wrap gap-2">
           {MOODS.map(mood => (
-            <button key={mood} onClick={() => setSelectedMood(selectedMood === mood ? null : mood)}
-              className="px-3 py-2 rounded-xl text-sm transition-all" style={{
-                background: selectedMood === mood ? 'rgba(123,97,255,0.4)' : 'rgba(255,255,255,0.05)',
-                border: `1px solid ${selectedMood === mood ? 'rgba(123,97,255,0.7)' : 'rgba(255,255,255,0.1)'}`,
-                color: selectedMood === mood ? '#e0d7ff' : 'rgba(255,255,255,0.6)',
-                transform: selectedMood === mood ? 'scale(1.05)' : 'scale(1)',
+            <button key={mood} onClick={() => setSelectedMood(mood)}
+              className="px-3 py-1.5 rounded-full text-sm transition-all"
+              style={{
+                background: selectedMood === mood ? 'rgba(123,97,255,0.4)' : 'rgba(255,255,255,0.06)',
+                border: `1px solid ${selectedMood === mood ? 'rgba(123,97,255,0.6)' : 'rgba(255,255,255,0.1)'}`,
+                color: selectedMood === mood ? 'white' : 'rgba(255,255,255,0.6)',
               }}>
               {mood}
             </button>
           ))}
         </div>
         {selectedMood && (
-          <p className="mt-4 text-sm text-purple-300 italic">
-            ✨ Your {selectedMood.split(' ')[1]} energy is noted in the stars. The universe honors all of your feelings today.
+          <p className="mt-3 text-sm text-purple-300">
+            The stars acknowledge your energy today: <strong className="text-white">{selectedMood}</strong>. Honor this feeling — it carries cosmic wisdom.
           </p>
         )}
-      </div>
-
-      {/* ── 7. SHARE YOUR READING */}
-      <div className="rounded-2xl p-6 text-center" style={{
-        background: 'linear-gradient(135deg, rgba(45,27,105,0.5), rgba(10,1,24,0.8))',
-        border: '1px solid rgba(123,97,255,0.25)', borderRadius: '16px',
-      }}>
-        <div className="text-3xl mb-2">✦</div>
-        <h2 className="text-white font-semibold mb-1">Share Your Cosmic Reading</h2>
-        <p className="text-white/50 text-sm mb-4">Let the universe speak through you to others</p>
-        <button onClick={handleShare}
-          className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all" style={{
-            background: copiedShare ? 'rgba(34,197,94,0.3)' : 'linear-gradient(135deg, #5B2D8E, #2D1B69)',
-            border: `1px solid ${copiedShare ? 'rgba(34,197,94,0.5)' : 'rgba(123,97,255,0.4)'}`,
-            color: 'white',
-          }}>
-          {copiedShare ? '✓ Copied to Clipboard!' : '📋 Copy Reading'}
-        </button>
       </div>
     </div>
   );

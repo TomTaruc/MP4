@@ -1,98 +1,232 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getZodiacSign } from '../utils/zodiac';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+// Monthly data keyed by sign
 const MONTHLY_DATA: Record<string, {
-  theme: string; overview: string;
-  weeks: { title: string; dates: string; reading: string; focus: string }[];
-  bestDays: number[]; challengingDays: number[];
-  scores: { love: number; career: number; finance: number; health: number; creativity: number; spirituality: number };
-  transits: { planet: string; event: string; date: string; meaning: string }[];
-  mantra: string; intention: string;
-  powerColor: string; powerCrystal: string;
+  overview: string; theme: string; powerCrystal: string; powerColor: string;
+  weeks: { title: string; focus: string; advice: string }[];
+  scores: { love: number; career: number; health: number; finance: number };
+  transits: { planet: string; effect: string; date: string }[];
+  intentions: string[];
 }> = {
   Aries: {
-    theme: 'Ignition & Expansion', powerColor: '#FF4136', powerCrystal: 'Carnelian',
-    overview: 'February is a month of cosmic ignition for Aries. Mars, your ruler, moves through your financial sector in the first half, bringing dynamic energy to money matters and resource building. The full moon mid-month illuminates your solar seventh house, bringing important relationship themes to the surface for examination and resolution. By month\'s end, you\'re ready to plant seeds for a major new cycle.',
+    theme: 'Bold Beginnings', powerCrystal: 'Carnelian', powerColor: '#FF4136',
+    overview: 'This month ignites your pioneering spirit, Aries. Mars energizes your drive for new ventures and bold actions. The first two weeks are ideal for launching initiatives you\'ve been planning. Mid-month brings a surge in social connections that could lead to exciting collaborations. The final weeks call for reflection before your next powerful move forward.',
     weeks: [
-      { title: 'The Spark', dates: 'Feb 1–7', focus: 'Finance & Self-Worth', reading: 'Mars energizes your earning potential. A bold financial move could set you apart from the competition. Your confidence in what you deserve is magnetic — negotiate, ask, claim.' },
-      { title: 'The Full Moon Storm', dates: 'Feb 8–14', focus: 'Relationships', reading: 'The full moon illuminates relationship dynamics you\'ve been navigating. An important conversation about mutual needs reaches its climax. Truth spoken lovingly transforms everything.' },
-      { title: 'The Turning Point', dates: 'Feb 15–21', focus: 'Communication', reading: 'Mercury sharpens your already direct communication. A message you\'ve been drafting in your mind finally gets sent. Local travel or a short course expands your immediate world.' },
-      { title: 'The Launch Pad', dates: 'Feb 22–28', focus: 'New Beginnings', reading: 'The new moon in Pisces activates your subconscious sector. Release what no longer serves you and dream boldly. The next chapter is being written in invisible ink — it will appear in March.' },
+      { title: 'Week 1: Launch', focus: 'New beginnings and bold initiatives', advice: 'Start the project you\'ve been delaying — cosmic timing is perfect.' },
+      { title: 'Week 2: Build', focus: 'Momentum and confidence', advice: 'Double down on what\'s working. Your energy is magnetic.' },
+      { title: 'Week 3: Connect', focus: 'Alliances and collaborations', advice: 'The right people are entering your orbit. Be open.' },
+      { title: 'Week 4: Reflect', focus: 'Integration and planning', advice: 'Assess progress honestly before the next bold move.' },
     ],
-    bestDays: [3, 8, 12, 17, 21, 26], challengingDays: [5, 10, 18, 23],
-    scores: { love: 78, career: 88, finance: 82, health: 80, creativity: 75, spirituality: 70 },
+    scores: { love: 82, career: 94, health: 85, finance: 78 },
     transits: [
-      { planet: 'Mars ♂', event: 'enters Gemini', date: 'Feb 4', meaning: 'Your communication becomes fiery and persuasive. Ideas that have been stuck begin to accelerate.' },
-      { planet: 'Full Moon', event: 'in Leo', date: 'Feb 12', meaning: 'Relationship dynamics peak. A creative project or romance reaches an important milestone.' },
-      { planet: 'Venus ♀', event: 'trines your Sun', date: 'Feb 19', meaning: 'Attraction, beauty, and harmony flow easily. Love and financial opportunities arrive through your natural magnetism.' },
-      { planet: 'New Moon', event: 'in Pisces', date: 'Feb 28', meaning: 'A spiritual fresh start. Plant seeds of intention in your hidden garden of the soul.' },
+      { planet: 'Mars', effect: 'Supercharges ambition and physical vitality', date: 'Week 1-2' },
+      { planet: 'Venus', effect: 'Softens edges, invites romantic opportunity', date: 'Week 2-3' },
+      { planet: 'Mercury', effect: 'Accelerates communication and clever ideas', date: 'Week 3-4' },
     ],
-    mantra: 'I ignite the world with my passion and claim the abundance I deserve.',
-    intention: 'This month I commit to boldly pursuing what I truly want, without apology or hesitation.',
+    intentions: ['I boldly claim what is mine', 'I lead with courage and passion', 'I initiate and I conquer'],
   },
   Taurus: {
-    theme: 'Deepening & Receiving', powerColor: '#2ECC40', powerCrystal: 'Malachite',
-    overview: 'February invites Taurus into a powerful period of deepening — in love, in values, and in spiritual connection. Venus, your ruler, moves through your tenth house of career mid-month, creating favorable professional conditions and possibly a public recognition moment. The full moon highlights your creativity and romantic life, while the new moon at month\'s end opens a new cycle of community and belonging.',
+    theme: 'Abundance & Security', powerCrystal: 'Emerald', powerColor: '#2ECC40',
+    overview: 'Venus showers your month with beauty, pleasure, and financial opportunity, Taurus. The opening weeks favor investments, creative projects, and deepening relationships. Mid-month brings a moment to reassess your values and what truly matters. The closing weeks deliver tangible rewards for your patient, consistent efforts throughout the month.',
     weeks: [
-      { title: 'Grounding Power', dates: 'Feb 1–7', focus: 'Career & Public Image', reading: 'Venus in your career sector makes you irresistibly appealing to authority figures and clients. Your aesthetic sensibility solves a professional problem in an unexpected way.' },
-      { title: 'Creative Bloom', dates: 'Feb 8–14', focus: 'Love & Creativity', reading: 'The full moon in your fifth house activates romance, creative self-expression, and joy. A creative project reaches completion. A romantic connection deepens significantly.' },
-      { title: 'The Inner Turn', dates: 'Feb 15–21', focus: 'Health & Daily Rituals', reading: 'Mercury highlights your health routines. Small, consistent adjustments to your daily habits now will yield extraordinary results by summer. Your body is asking for something specific — listen.' },
-      { title: 'Community Rising', dates: 'Feb 22–28', focus: 'Friends & Belonging', reading: 'The new moon activates your circle of community. A new friendship or group connection forms that aligns perfectly with your evolving values and aspirations.' },
+      { title: 'Week 1: Cultivate', focus: 'Financial and creative growth', advice: 'Make one smart financial decision this week.' },
+      { title: 'Week 2: Savor', focus: 'Beauty, pleasure, and connection', advice: 'Invest in relationships — they are your greatest asset.' },
+      { title: 'Week 3: Value', focus: 'Reassessing priorities', advice: 'Release what no longer aligns with your authentic values.' },
+      { title: 'Week 4: Harvest', focus: 'Rewards and recognition', advice: 'Accept what you\'ve earned with gratitude and grace.' },
     ],
-    bestDays: [2, 7, 14, 18, 23, 27], challengingDays: [6, 11, 19, 24],
-    scores: { love: 88, career: 82, finance: 85, health: 80, creativity: 90, spirituality: 75 },
+    scores: { love: 90, career: 81, health: 84, finance: 93 },
     transits: [
-      { planet: 'Venus ♀', event: 'conjuncts Saturn', date: 'Feb 3', meaning: 'A committed, serious approach to love or money pays off. What you build now is built to last.' },
-      { planet: 'Full Moon', event: 'in Leo', date: 'Feb 12', meaning: 'A creative or romantic peak. Something you\'ve been working on receives a beautiful culmination.' },
-      { planet: 'Mercury ☿', event: 'enters Pisces', date: 'Feb 14', meaning: 'Intuitive thinking and artistic expression are enhanced. Dreamy insights arrive in the quiet moments.' },
-      { planet: 'New Moon', event: 'in Pisces', date: 'Feb 28', meaning: 'A fresh social cycle begins. New friendships and community connections align with your authentic values.' },
+      { planet: 'Venus', effect: 'Amplifies beauty, love, and financial magnetism', date: 'All month' },
+      { planet: 'Jupiter', effect: 'Expands abundance in all material areas', date: 'Week 1-3' },
+      { planet: 'Saturn', effect: 'Rewards disciplined efforts with lasting gains', date: 'Week 3-4' },
     ],
-    mantra: 'I receive all the beauty and abundance the universe offers me with gracious ease.',
-    intention: 'This month I commit to honoring my body, my values, and my capacity for joy in equal measure.',
+    intentions: ['I am a magnet for abundance', 'I build with patience and love', 'I deserve all beautiful things'],
   },
   Gemini: {
-    theme: 'Expansion & Truth-Telling', powerColor: '#FFDC00', powerCrystal: 'Blue Kyanite',
-    overview: 'February is an extraordinary month for Gemini\'s professional and intellectual development. Mercury, your ruler, moves through your tenth house, making you the most articulate and persuasive you\'ve been all year in professional settings. The full moon illuminates your home and family sector, while the new moon at month\'s end opens a major career chapter that your hard work has been building toward.',
+    theme: 'Communication & Connection', powerCrystal: 'Citrine', powerColor: '#FFDC00',
+    overview: 'Mercury ignites your already brilliant mind this month, Gemini. Exceptional opportunities arise through conversations, writing, and networking. The first half of the month is perfect for pitching ideas and forging new connections. Mid-month brings a brief pause for processing. The final weeks see your most inspired ideas reach receptive audiences.',
     weeks: [
-      { title: 'Voice & Vision', dates: 'Feb 1–7', focus: 'Career Communication', reading: 'Mercury in your career house makes you the most compelling communicator in any room. Pitch boldly, write prolifically, and trust that your words are building your future.' },
-      { title: 'Home Revelations', dates: 'Feb 8–14', focus: 'Home & Family', reading: 'The full moon illuminates unresolved family dynamics or housing situations. An honest conversation at home resolves something that has been simmering beneath the surface.' },
-      { title: 'The Romantic Stretch', dates: 'Feb 15–21', focus: 'Love & Creativity', reading: 'Venus warms your fifth house. Romance becomes playful and electric. Singles may meet someone through a creative class or cultural event. Couples discover a new dimension of their chemistry.' },
-      { title: 'The Career Launch', dates: 'Feb 22–28', focus: 'Professional Destiny', reading: 'The new moon in Pisces plants seeds in your career house. An opportunity that seems slightly beyond your current reach is actually perfectly timed for your next level of growth.' },
+      { title: 'Week 1: Spark', focus: 'Ideas and initial connections', advice: 'Share your vision widely — it resonates more than you know.' },
+      { title: 'Week 2: Network', focus: 'Strategic relationship building', advice: 'The most valuable contact appears unexpectedly.' },
+      { title: 'Week 3: Process', focus: 'Integration and reflection', advice: 'Slow down briefly to absorb all you\'ve received.' },
+      { title: 'Week 4: Broadcast', focus: 'Sharing your best ideas', advice: 'Publish, present, or pitch — your timing is perfect.' },
     ],
-    bestDays: [4, 9, 13, 18, 22, 27], challengingDays: [7, 12, 20, 25],
-    scores: { love: 80, career: 95, finance: 78, health: 72, creativity: 90, spirituality: 68 },
+    scores: { love: 79, career: 93, health: 72, finance: 81 },
     transits: [
-      { planet: 'Mercury ☿', event: 'trines your Sun', date: 'Feb 5', meaning: 'Your natural wit and intelligence operate at peak performance. Every conversation moves in your favor.' },
-      { planet: 'Full Moon', event: 'in Leo', date: 'Feb 12', meaning: 'Home and family matters peak. An honest conversation resolves a long-standing domestic pattern.' },
-      { planet: 'Venus ♀', event: 'enters Pisces', date: 'Feb 16', meaning: 'Love and creativity flow with magical ease. Your imagination becomes your greatest romantic gift.' },
-      { planet: 'New Moon', event: 'in Pisces', date: 'Feb 28', meaning: 'A career seed of profound importance is planted. The harvest will be extraordinary.' },
+      { planet: 'Mercury', effect: 'Electrifies communication and intellectual gifts', date: 'Week 1-2' },
+      { planet: 'Sun', effect: 'Illuminates your authentic self and voice', date: 'Week 2-3' },
+      { planet: 'Jupiter', effect: 'Expands reach and opens publishing doors', date: 'Week 4' },
     ],
-    mantra: 'My words build worlds, and I speak my truth with confident, loving clarity.',
-    intention: 'This month I commit to expressing my authentic voice in my career and relationships without dilution.',
+    intentions: ['I communicate my truth with clarity', 'I connect and I inspire', 'My words create positive change'],
+  },
+  Cancer: {
+    theme: 'Nurturing & Intuition', powerCrystal: 'Moonstone', powerColor: '#00BFFF',
+    overview: 'The Moon heightens your extraordinary intuition to new peaks this month, Cancer. Home, family, and emotional foundations take center stage in beautiful ways. The first weeks bring domestic harmony and family connections that nourish your soul. Mid-month, your psychic insights guide an important decision with perfect accuracy. The final weeks call for honoring your own emotional needs as a sacred priority.',
+    weeks: [
+      { title: 'Week 1: Nest', focus: 'Home, family, and emotional foundations', advice: 'Create beauty in your sanctuary — it directly affects your power.' },
+      { title: 'Week 2: Nurture', focus: 'Caring for self and loved ones', advice: 'Balance giving and receiving — your wellbeing matters equally.' },
+      { title: 'Week 3: Intuit', focus: 'Psychic insights and inner knowing', advice: 'Trust the feeling that keeps returning — it is accurate.' },
+      { title: 'Week 4: Honor', focus: 'Self-care and emotional truth', advice: 'Your needs are not burdens. Honor them as sacred.' },
+    ],
+    scores: { love: 94, career: 77, health: 82, finance: 76 },
+    transits: [
+      { planet: 'Moon', effect: 'Amplifies intuition and emotional intelligence', date: 'All month' },
+      { planet: 'Venus', effect: 'Blesses family relationships with warmth', date: 'Week 1-2' },
+      { planet: 'Neptune', effect: 'Deepens psychic sensitivity and creative vision', date: 'Week 3' },
+    ],
+    intentions: ['I trust my intuition completely', 'I create safety for myself and those I love', 'My sensitivity is my superpower'],
+  },
+  Leo: {
+    theme: 'Radiance & Recognition', powerCrystal: 'Sunstone', powerColor: '#FF851B',
+    overview: 'The Sun blazes through your chart this month, Leo, amplifying your natural radiance to extraordinary levels. Creative projects, leadership opportunities, and romantic adventures all flourish. The first two weeks are your time to shine most brilliantly in professional settings. Mid-month sparks a beautiful creative breakthrough. The final weeks bring well-deserved recognition and celebration.',
+    weeks: [
+      { title: 'Week 1: Perform', focus: 'Professional visibility and leadership', advice: 'Step forward boldly — the spotlight is yours and you deserve it.' },
+      { title: 'Week 2: Create', focus: 'Artistic and expressive projects', advice: 'Your creativity is at its most magnetic peak. Create freely.' },
+      { title: 'Week 3: Breakthrough', focus: 'Creative and personal breakthrough', advice: 'One inspired idea this week changes your trajectory significantly.' },
+      { title: 'Week 4: Celebrate', focus: 'Recognition and joy', advice: 'Receive praise with genuine grace. You have earned every bit of it.' },
+    ],
+    scores: { love: 87, career: 95, health: 89, finance: 82 },
+    transits: [
+      { planet: 'Sun', effect: 'Maximizes your radiance, confidence, and appeal', date: 'All month' },
+      { planet: 'Mars', effect: 'Fuels creative fire and competitive drive', date: 'Week 1-2' },
+      { planet: 'Jupiter', effect: 'Brings abundant recognition and opportunity', date: 'Week 4' },
+    ],
+    intentions: ['I shine my light for all to see', 'I create with joy and bold confidence', 'I am worthy of celebration'],
+  },
+  Virgo: {
+    theme: 'Precision & Mastery', powerCrystal: 'Jade', powerColor: '#01FF70',
+    overview: 'Mercury sharpens your analytical genius to a perfect edge this month, Virgo. Systems you improve, details you catch, and processes you refine create remarkable outcomes. The first half rewards meticulous work with significant recognition. Mid-month brings an opportunity to demonstrate your expertise in an important setting. The final weeks deliver the satisfying results of your careful, dedicated efforts.',
+    weeks: [
+      { title: 'Week 1: Analyze', focus: 'Problem-solving and process improvement', advice: 'The system flaw you identify and fix this week saves enormous resources.' },
+      { title: 'Week 2: Refine', focus: 'Perfecting and optimizing', advice: 'Your attention to detail elevates everything it touches.' },
+      { title: 'Week 3: Demonstrate', focus: 'Showcasing expertise', advice: 'Share your knowledge — your mastery deserves an audience.' },
+      { title: 'Week 4: Deliver', focus: 'Completing and celebrating results', advice: 'The work is done. Accept the praise it earns with humility and pride.' },
+    ],
+    scores: { love: 76, career: 94, health: 90, finance: 85 },
+    transits: [
+      { planet: 'Mercury', effect: 'Amplifies analytical thinking and precision', date: 'All month' },
+      { planet: 'Saturn', effect: 'Rewards systematic effort with lasting achievement', date: 'Week 2-3' },
+      { planet: 'Chiron', effect: 'Heals perfectionism, invites compassionate standards', date: 'Week 4' },
+    ],
+    intentions: ['I achieve excellence through dedication', 'I serve with precision and love', 'My work creates lasting positive impact'],
+  },
+  Libra: {
+    theme: 'Balance & Beauty', powerCrystal: 'Rose Quartz', powerColor: '#FF69B4',
+    overview: 'Venus graces your entire month with exceptional beauty, harmony, and relationship magic, Libra. Partnerships — both personal and professional — reach meaningful new depth. The first two weeks are ideal for important negotiations and creative collaborations. Mid-month, a heartfelt conversation transforms a key relationship beautifully. The final weeks bring the balanced, harmonious life you have been consciously creating.',
+    weeks: [
+      { title: 'Week 1: Harmonize', focus: 'Relationship alignment and collaboration', advice: 'The partnership conversation you\'ve been avoiding brings beautiful resolution.' },
+      { title: 'Week 2: Negotiate', focus: 'Agreements and contracts', advice: 'Your diplomatic genius creates solutions that honor everyone involved.' },
+      { title: 'Week 3: Deepen', focus: 'Emotional intimacy and truth', advice: 'Vulnerability in one key relationship creates unbreakable connection.' },
+      { title: 'Week 4: Balance', focus: 'Achieving harmony across all areas', advice: 'You have created beauty. Take a moment to genuinely appreciate it.' },
+    ],
+    scores: { love: 95, career: 83, health: 79, finance: 80 },
+    transits: [
+      { planet: 'Venus', effect: 'Blesses relationships and creative work with grace', date: 'All month' },
+      { planet: 'Jupiter', effect: 'Expands love, partnership, and social abundance', date: 'Week 1-2' },
+      { planet: 'Mercury', effect: 'Facilitates perfect diplomacy and elegant communication', date: 'Week 2-3' },
+    ],
+    intentions: ['I create harmony in all my relationships', 'I attract beauty and balance effortlessly', 'Love flows freely through my life'],
+  },
+  Scorpio: {
+    theme: 'Transformation & Power', powerCrystal: 'Obsidian', powerColor: '#85144b',
+    overview: 'Pluto intensifies your month with powerful transformation and breakthrough energy, Scorpio. Hidden truths surface, outdated patterns dissolve, and your authentic power rises. The first two weeks are potent for strategic moves and research that others miss. Mid-month brings a pivotal revelation that accelerates your transformation. The final weeks reveal the extraordinary version of yourself that was waiting beneath the surface.',
+    weeks: [
+      { title: 'Week 1: Investigate', focus: 'Research, strategy, and uncovering truth', advice: 'The information you seek is closer than it appears. Look beneath the surface.' },
+      { title: 'Week 2: Strategize', focus: 'Power moves and intentional positioning', advice: 'Make your move now — your timing and instincts are perfectly calibrated.' },
+      { title: 'Week 3: Transform', focus: 'Releasing old patterns and emerging anew', advice: 'The old story ends here. Step fearlessly into the powerful new chapter.' },
+      { title: 'Week 4: Rise', focus: 'Claiming your authentic power', advice: 'You have transformed. Own your power completely and unapologetically.' },
+    ],
+    scores: { love: 88, career: 90, health: 78, finance: 86 },
+    transits: [
+      { planet: 'Pluto', effect: 'Catalyzes deep transformation and power awakening', date: 'All month' },
+      { planet: 'Mars', effect: 'Provides the courage to act on your deepest truths', date: 'Week 1-2' },
+      { planet: 'Neptune', effect: 'Dissolves illusions, revealing authentic reality', date: 'Week 3' },
+    ],
+    intentions: ['I embrace transformation fearlessly', 'I claim my full authentic power', 'I rise from every challenge stronger'],
+  },
+  Sagittarius: {
+    theme: 'Freedom & Wisdom', powerCrystal: 'Turquoise', powerColor: '#3D9970',
+    overview: 'Jupiter expands every horizon in your world this month, Sagittarius. Adventures — physical, intellectual, and spiritual — call your name irresistibly. The first two weeks are exceptional for travel, higher learning, and philosophical exploration. Mid-month brings a wisdom insight that shifts your entire perspective. The final weeks see your expansive vision attracting exactly the opportunities it needs to manifest.',
+    weeks: [
+      { title: 'Week 1: Explore', focus: 'Adventure, travel, and new horizons', advice: 'Say yes to the unexpected opportunity — it expands your world beautifully.' },
+      { title: 'Week 2: Learn', focus: 'Higher education and philosophical growth', advice: 'The teacher or teaching that appears now is exactly what your soul has been seeking.' },
+      { title: 'Week 3: Insight', focus: 'Wisdom integration and perspective shift', advice: 'One profound realization this week changes how you see everything.' },
+      { title: 'Week 4: Manifest', focus: 'Vision becoming tangible reality', advice: 'Your expanded perspective is now attracting aligned opportunities.' },
+    ],
+    scores: { love: 81, career: 89, health: 92, finance: 79 },
+    transits: [
+      { planet: 'Jupiter', effect: 'Maximizes expansion, luck, and philosophical growth', date: 'All month' },
+      { planet: 'Sun', effect: 'Illuminates your authentic truth and purpose', date: 'Week 1-2' },
+      { planet: 'Uranus', effect: 'Delivers exciting, unexpected breakthroughs', date: 'Week 3' },
+    ],
+    intentions: ['I embrace adventure and growth fearlessly', 'I seek and share wisdom generously', 'My freedom creates my greatest achievements'],
+  },
+  Capricorn: {
+    theme: 'Achievement & Legacy', powerCrystal: 'Garnet', powerColor: '#AAAAAA',
+    overview: 'Saturn rewards your consistent discipline with remarkable recognition this month, Capricorn. Career matters dominate the first two weeks — a major opportunity, promotion, or responsibility arrives that reflects your years of dedicated work. Mid-month calls for grounding your ambition with personal warmth. The final weeks plant the seeds of a new achievement cycle that will define your legacy.',
+    weeks: [
+      { title: 'Week 1: Ascend', focus: 'Career breakthrough and authority', advice: 'The opportunity that arrives this week is the one you have worked years to deserve.' },
+      { title: 'Week 2: Lead', focus: 'Stepping into greater responsibility', advice: 'Accept the expanded role with the confidence your experience has fully earned.' },
+      { title: 'Week 3: Balance', focus: 'Integrating ambition with personal life', advice: 'Success means nothing without the people who matter most. Invest in them.' },
+      { title: 'Week 4: Plant', focus: 'Sowing seeds for the next achievement cycle', advice: 'One intentional investment now compounds into extraordinary results.' },
+    ],
+    scores: { love: 75, career: 96, health: 80, finance: 91 },
+    transits: [
+      { planet: 'Saturn', effect: 'Rewards long-term discipline with career elevation', date: 'All month' },
+      { planet: 'Jupiter', effect: 'Brings abundant recognition and material rewards', date: 'Week 1-2' },
+      { planet: 'Venus', effect: 'Softens ambition with genuine warmth and connection', date: 'Week 3' },
+    ],
+    intentions: ['I build my legacy with patience and excellence', 'I master every challenge I face', 'My disciplined efforts create lasting abundance'],
+  },
+  Aquarius: {
+    theme: 'Revolution & Vision', powerCrystal: 'Amethyst', powerColor: '#00B4D8',
+    overview: 'Uranus electrifies your month with breakthrough energy and revolutionary insights, Aquarius. Your most unconventional ideas are exactly what the world needs. The early weeks are exceptional for innovation, technology, and community building. Mid-month, a group project or collaborative venture gains unstoppable momentum. The final days bring a meaningful connection that feeds your vision and accelerates your impact.',
+    weeks: [
+      { title: 'Week 1: Innovate', focus: 'Breakthrough ideas and technology', advice: 'The unconventional solution you\'re hesitating to share is the right one. Share it.' },
+      { title: 'Week 2: Connect', focus: 'Community and collaborative energy', advice: 'Your network is your greatest resource this week. Activate it intentionally.' },
+      { title: 'Week 3: Build', focus: 'Collaborative momentum and group projects', advice: 'The collective vision gains power when you step fully into your leadership role.' },
+      { title: 'Week 4: Vision', focus: 'Future-oriented planning and meaningful connection', advice: 'The person or idea that arrives this week expands your vision of what\'s possible.' },
+    ],
+    scores: { love: 79, career: 92, health: 81, finance: 83 },
+    transits: [
+      { planet: 'Uranus', effect: 'Catalyzes innovation, breakthroughs, and liberation', date: 'All month' },
+      { planet: 'Saturn', effect: 'Grounds revolutionary ideas into lasting structures', date: 'Week 2-3' },
+      { planet: 'Jupiter', effect: 'Expands community influence and humanitarian reach', date: 'Week 4' },
+    ],
+    intentions: ['I think beyond all conventional limits', 'I innovate for the benefit of all humanity', 'My unique vision creates positive global change'],
+  },
+  Pisces: {
+    theme: 'Surrender & Magic', powerCrystal: 'Amethyst', powerColor: '#74C0FC',
+    overview: 'Neptune wraps your entire month in luminous, magical energy, Pisces. Your creative gifts, spiritual sensitivity, and psychic abilities are operating at their absolute peak. The opening weeks are extraordinary for artistic work and spiritual practice. Mid-month, a full moon illuminates a profound emotional truth that sets you free. The final days bring a soul connection or spiritual experience that opens an entirely new chapter.',
+    weeks: [
+      { title: 'Week 1: Create', focus: 'Artistic expression and spiritual practice', advice: 'Create without judgment this week — your most inspired work emerges from pure flow.' },
+      { title: 'Week 2: Flow', focus: 'Intuition and emotional intelligence', advice: 'Follow the current rather than fighting it — the universe knows the best path.' },
+      { title: 'Week 3: Illuminate', focus: 'Emotional truth and release', advice: 'The full moon reveals what you\'ve been avoiding. Face it — freedom awaits.' },
+      { title: 'Week 4: Connect', focus: 'Soul connections and new chapters', advice: 'The arrival at month\'s end — whether a person or an insight — is profoundly significant.' },
+    ],
+    scores: { love: 94, career: 79, health: 76, finance: 74 },
+    transits: [
+      { planet: 'Neptune', effect: 'Maximizes creativity, spirituality, and psychic gifts', date: 'All month' },
+      { planet: 'Venus', effect: 'Deepens romantic and spiritual love', date: 'Week 1-2' },
+      { planet: 'Full Moon', effect: 'Illuminates emotional truths and enables release', date: 'Week 3' },
+    ],
+    intentions: ['I surrender to the magic of the universe', 'I trust the wisdom of my deepest feelings', 'I create beauty and healing wherever I flow'],
   },
 };
 
-// Fill remaining signs with Aries data as base (in a real app, each would be unique)
-(['Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'] as const).forEach(sign => {
-  (MONTHLY_DATA as Record<string, typeof MONTHLY_DATA['Aries']>)[sign] = {
-    ...MONTHLY_DATA['Aries'],
-    theme: sign === 'Cancer' ? 'Intuition & Nourishment' : sign === 'Leo' ? 'Leadership & Radiance' :
-           sign === 'Virgo' ? 'Mastery & Healing' : sign === 'Libra' ? 'Balance & Beauty' :
-           sign === 'Scorpio' ? 'Transformation & Power' : sign === 'Sagittarius' ? 'Freedom & Wisdom' :
-           sign === 'Capricorn' ? 'Achievement & Legacy' : sign === 'Aquarius' ? 'Revolution & Vision' :
-           'Surrender & Magic',
-    powerColor: sign === 'Cancer' ? '#7FDBFF' : sign === 'Leo' ? '#FF851B' : sign === 'Virgo' ? '#01FF70' :
-                sign === 'Libra' ? '#F012BE' : sign === 'Scorpio' ? '#85144b' : sign === 'Sagittarius' ? '#3D9970' :
-                sign === 'Capricorn' ? '#111111' : sign === 'Aquarius' ? '#00B4D8' : '#74C0FC',
-  };
-});
-
 export default function MonthlyHoroscopePage() {
   const { profile } = useAuth();
-  const sign = profile?.zodiac_sign || 'Aries';
+
+  // AuthContext guarantees profile.zodiac_sign is correct — no 'Aries' fallback needed
+  const sign = (profile?.date_of_birth ? getZodiacSign(profile.date_of_birth) : null)
+    || profile?.zodiac_sign
+    || 'Aries';
   const data = MONTHLY_DATA[sign] || MONTHLY_DATA['Aries'];
+
   const now = new Date();
   const monthName = MONTH_NAMES[now.getMonth()];
   const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -114,7 +248,7 @@ export default function MonthlyHoroscopePage() {
         @keyframes pulse-ring { 0%,100%{opacity:.6} 50%{opacity:1} }
       `}</style>
 
-      {/* ── 1. MONTH OVERVIEW NARRATIVE */}
+      {/* ── 1. MONTH OVERVIEW */}
       <div className="rounded-3xl p-6 relative overflow-hidden" style={{
         background: 'linear-gradient(135deg, rgba(45,27,105,0.9), rgba(10,1,24,0.95))',
         border: `1px solid ${data.powerColor}44`,
@@ -139,35 +273,46 @@ export default function MonthlyHoroscopePage() {
         </div>
       </div>
 
-      {/* ── 2. WEEK-BY-WEEK BREAKDOWN */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">📅 Weekly Breakdown</h2>
+      {/* ── 2. MONTHLY SCORES */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">📊 Monthly Cosmic Scores</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {(Object.entries(data.scores) as [string, number][]).map(([key, val]) => (
+            <div key={key} className="p-4 rounded-xl" style={{ background: `${scoreColor(val)}10`, border: `1px solid ${scoreColor(val)}30` }}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-white/70 capitalize">{key}</span>
+                <span className="text-sm font-bold" style={{ color: scoreColor(val) }}>{scoreLabel(val)}</span>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <div className="h-full rounded-full" style={{ width: `${val}%`, background: `linear-gradient(90deg, ${scoreColor(val)}88, ${scoreColor(val)})` }} />
+              </div>
+              <span className="text-xs text-white/40 mt-1 block">{val}/100</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 3. WEEKLY BREAKDOWN */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">📅 Weekly Breakdown</h2>
         <div className="space-y-3">
           {data.weeks.map((week, i) => (
             <div key={i}>
-              <button onClick={() => setSelectedWeek(selectedWeek === i ? null : i)}
-                className="w-full text-left p-4 rounded-xl transition-all" style={{
-                  background: selectedWeek === i ? `${data.powerColor}20` : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${selectedWeek === i ? data.powerColor + '50' : 'rgba(255,255,255,0.06)'}`,
+              <button
+                onClick={() => setSelectedWeek(selectedWeek === i ? null : i)}
+                className="w-full text-left p-4 rounded-xl transition-all"
+                style={{
+                  background: selectedWeek === i ? `${data.powerColor}18` : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${selectedWeek === i ? data.powerColor + '44' : 'rgba(255,255,255,0.08)'}`,
                 }}>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-sm font-semibold text-white">Week {i + 1}: {week.title}</span>
-                    <span className="ml-2 text-xs text-white/40">{week.dates}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${data.powerColor}30`, color: data.powerColor }}>
-                      {week.focus}
-                    </span>
-                    <span className="text-white/40">{selectedWeek === i ? '▲' : '▼'}</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-white">{week.title}</span>
+                  <span className="text-xs" style={{ color: data.powerColor }}>{week.focus}</span>
                 </div>
               </button>
               {selectedWeek === i && (
-                <div className="mt-2 p-4 rounded-xl text-sm text-white/75 leading-relaxed" style={{
-                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)',
-                }}>
-                  {week.reading}
+                <div className="mt-2 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p className="text-sm text-white/80 leading-relaxed">💫 {week.advice}</p>
                 </div>
               )}
             </div>
@@ -175,79 +320,45 @@ export default function MonthlyHoroscopePage() {
         </div>
       </div>
 
-      {/* ── 3. BEST & WORST DAYS CALENDAR */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">📆 {monthName} Power Calendar</h2>
-        <div className="flex items-center gap-4 mb-4 text-xs text-white/50">
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block bg-green-500"></span> Best Days</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block bg-red-500"></span> Challenging</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full inline-block" style={{ background: data.powerColor }}></span> Today</span>
-        </div>
-        <div className="grid grid-cols-7 gap-1.5">
-          {['S','M','T','W','T','F','S'].map(d => (
-            <div key={d} className="text-center text-xs text-white/30 py-1">{d}</div>
+      {/* ── 4. CALENDAR VIEW */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">🗓️ {monthName} at a Glance</h2>
+        <div className="grid grid-cols-7 gap-1">
+          {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
+            <div key={d} className="text-center text-xs text-white/40 pb-2">{d}</div>
           ))}
-          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
-            const isBest = data.bestDays.includes(day);
-            const isChallenging = data.challengingDays.includes(day);
-            const isToday = day === today;
-            return (
-              <div key={day} className="cal-day text-center py-2 rounded-lg text-xs font-medium cursor-default" style={{
-                background: isToday ? data.powerColor : isBest ? 'rgba(34,197,94,0.2)' : isChallenging ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
-                color: isToday ? 'white' : isBest ? '#86efac' : isChallenging ? '#fca5a5' : 'rgba(255,255,255,0.5)',
-                border: `1px solid ${isToday ? data.powerColor : isBest ? 'rgba(34,197,94,0.3)' : isChallenging ? 'rgba(239,68,68,0.25)' : 'transparent'}`,
-                fontWeight: isToday ? 'bold' : 'normal',
+          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
+            <div key={day} className="cal-day text-center text-xs rounded-lg p-1.5 cursor-default"
+              style={{
+                background: day === today ? `${data.powerColor}40` : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${day === today ? data.powerColor : 'rgba(255,255,255,0.06)'}`,
+                color: day === today ? 'white' : day < today ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)',
+                fontWeight: day === today ? 700 : 400,
               }}>
-                {day}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── 4. MONTHLY SCORES DASHBOARD */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">📊 Monthly Forecast Scores</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {(Object.entries(data.scores) as [string, number][]).map(([key, val]) => (
-            <div key={key} className="p-4 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.04)' }}>
-              <div className="text-2xl font-bold mb-1" style={{ color: scoreColor(val) }}>{val}</div>
-              <div className="text-xs text-white/50 capitalize mb-1">{key}</div>
-              <div className="text-xs font-medium" style={{ color: scoreColor(val) }}>{scoreLabel(val)}</div>
-              <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <div className="h-full rounded-full" style={{
-                  width: `${val}%`, background: `linear-gradient(90deg, ${scoreColor(val)}66, ${scoreColor(val)})`,
-                }} />
-              </div>
+              {day}
             </div>
           ))}
         </div>
       </div>
 
       {/* ── 5. PLANETARY TRANSITS */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">🪐 Key Planetary Transits</h2>
-        <div className="space-y-2">
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-4">🪐 Key Planetary Influences</h2>
+        <div className="space-y-3">
           {data.transits.map((transit, i) => (
             <div key={i}>
-              <button onClick={() => setViewedTransit(viewedTransit === i ? null : i)}
-                className="w-full text-left p-4 rounded-xl transition-all" style={{
-                  background: viewedTransit === i ? 'rgba(123,97,255,0.15)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${viewedTransit === i ? 'rgba(123,97,255,0.3)' : 'rgba(255,255,255,0.06)'}`,
-                }}>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <span className="text-purple-300 font-semibold text-sm">{transit.planet}</span>
-                    <span className="text-white/60 text-sm">{transit.event}</span>
-                  </div>
-                  <span className="text-xs text-white/40">{transit.date}</span>
+              <button
+                onClick={() => setViewedTransit(viewedTransit === i ? null : i)}
+                className="w-full text-left p-4 rounded-xl transition-all"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-cyan-400">{transit.planet}</span>
+                  <span className="text-xs text-purple-400">{transit.date}</span>
                 </div>
               </button>
               {viewedTransit === i && (
-                <div className="mt-1 px-4 py-3 rounded-xl text-sm text-white/70 italic" style={{
-                  background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)',
-                }}>
-                  ✨ {transit.meaning}
+                <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(0,191,255,0.05)', border: '1px solid rgba(0,191,255,0.2)' }}>
+                  <p className="text-sm text-white/80">{transit.effect}</p>
                 </div>
               )}
             </div>
@@ -255,49 +366,24 @@ export default function MonthlyHoroscopePage() {
         </div>
       </div>
 
-      {/* ── 6. MONTHLY MANTRA */}
-      <div className="rounded-2xl p-6 text-center" style={{
-        background: `radial-gradient(ellipse, ${data.powerColor}12, rgba(10,1,24,0.9))`,
-        border: `1px solid ${data.powerColor}30`, borderRadius: '16px',
-      }}>
-        <div className="text-2xl mb-2 pulse-glow">🌙</div>
-        <h2 className="text-xs uppercase tracking-widest text-white/40 mb-2">{monthName} Mantra</h2>
-        <p className="text-xl text-white leading-relaxed italic" style={{ fontFamily: 'Cinzel, serif' }}>
-          "{data.mantra}"
-        </p>
-      </div>
-
-      {/* ── 7. GOALS & INTENTIONS TRACKER */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-        <h2 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">🎯 Monthly Intentions</h2>
-        <p className="text-xs text-white/40 mb-4">Set 3 cosmic intentions for {monthName}</p>
+      {/* ── 6. MONTHLY INTENTIONS */}
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-lg font-semibold text-white mb-2">🌱 Monthly Intentions</h2>
+        <p className="text-xs text-white/40 mb-4">Set three intentions to align with {monthName}\'s cosmic energy</p>
         <div className="space-y-3 mb-4">
           {intentions.map((val, i) => (
-            <div key={i} className="flex gap-3 items-center">
-              <span className="text-sm w-5 text-center" style={{ color: data.powerColor }}>✦</span>
-              <input
-                value={val}
-                onChange={e => {
-                  const next = [...intentions];
-                  next[i] = e.target.value;
-                  setIntentions(next);
-                  setSavedIntentions(false);
-                }}
-                placeholder={`Intention ${i + 1}...`}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
-              />
-            </div>
+            <input key={i} value={val}
+              onChange={e => setIntentions(prev => { const n = [...prev]; n[i] = e.target.value; return n; })}
+              placeholder={data.intentions[i]}
+              className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-white/30 outline-none"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
           ))}
         </div>
-        <p className="text-xs text-white/40 mb-3 italic">{data.intention}</p>
-        <button onClick={() => setSavedIntentions(true)}
-          className="px-5 py-2 rounded-xl text-sm font-semibold transition-all" style={{
-            background: savedIntentions ? `${data.powerColor}40` : `${data.powerColor}20`,
-            border: `1px solid ${data.powerColor}50`,
-            color: data.powerColor,
-          }}>
-          {savedIntentions ? '✓ Intentions Set Under the Stars' : '🌟 Set My Intentions'}
+        <button
+          onClick={() => { setSavedIntentions(true); setTimeout(() => setSavedIntentions(false), 2000); }}
+          className="px-5 py-2 rounded-full text-sm font-medium transition-all"
+          style={{ background: `${data.powerColor}25`, color: data.powerColor, border: `1px solid ${data.powerColor}44` }}>
+          {savedIntentions ? '✓ Intentions Set!' : '🔖 Set Intentions'}
         </button>
       </div>
     </div>

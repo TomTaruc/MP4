@@ -40,6 +40,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         {profile && (
           <div className="mt-4 text-sm">
             <p className="text-purple-200 truncate">{profile.full_name}</p>
+            {/* profile.zodiac_sign is guaranteed correct by AuthContext */}
             <p className="text-cyan-400 text-xs font-medium">{profile.zodiac_sign}</p>
           </div>
         )}
@@ -57,9 +58,8 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                 color: active ? '#00BFFF' : '#F0EAFF',
                 borderLeft: active ? '3px solid #00BFFF' : '3px solid transparent',
                 background: active ? 'rgba(0,191,255,0.1)' : 'transparent',
-                textShadow: active ? '0 0 8px rgba(0,191,255,0.6)' : 'none',
-              }}
-            >
+                textShadow: active ? '0 0 10px rgba(0,191,255,0.5)' : 'none',
+              }}>
               <Icon size={18} />
               <span>{label}</span>
             </button>
@@ -67,13 +67,13 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-purple-900/40">
+      <div className="px-5 py-4 border-t border-purple-900/40">
         <button
           onClick={signOut}
-          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-red-400 hover:bg-red-900/20 transition-all duration-200"
-        >
-          <LogOut size={18} />
-          <span>Logout</span>
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-purple-300 hover:text-red-400 transition-all"
+          style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <LogOut size={16} />
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>
