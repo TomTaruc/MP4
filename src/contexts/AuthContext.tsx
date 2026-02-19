@@ -24,25 +24,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchProfile(userId: string) {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-      
-    if (!error && data) {
-      setProfile(data);
-    } else {
-      setProfile(null);
+  // Wraps any promise with a timeout so a hanging DB/network call
+  // can never freeze the UI indefinitely.
+  function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+    return Promise.race([
+      promise,
+      new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+    ]);
+  }
+
+  async function fetchProfile(userId: string): Promise<Profile | null> {
+    try {
+      const result = await withTimeout(
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle(),
+        5000 // give up after 5 seconds
+      );
+
+      if (!result) {
+        console.warn('fetchProfile timed out for user:', userId);
+        return null;
+      }
+
+      const { data, error } = result;
+      if (error) {
+        console.error('fetchProfile error:', error.message);
+        return null;
+      }
+
+      return (data as Profile) ?? null;
+    } catch (err) {
+      console.error('fetchProfile exception:', err);
+      return null;
     }
   }
 
   async function refreshProfile() {
-    // Fetch directly from the session to avoid stale React state closures
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await fetchProfile(session.user.id);
+    try {
+      const result = await withTimeout(supabase.auth.getSession(), 5000);
+      if (!result) return;
+
+      const { data: { session } } = result;
+      if (session?.user) {
+        setUser(session.user);
+        const profileData = await fetchProfile(session.user.id);
+        setProfile(profileData);
+      }
+    } catch (err) {
+      console.error('refreshProfile error:', err);
     }
   }
 
@@ -50,29 +82,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     async function initializeAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (mounted) {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
+      try {
+        const result = await withTimeout(supabase.auth.getSession(), 8000);
+
+        if (!mounted) return;
+
+        if (!result) {
+          console.warn('getSession() timed out — treating as no session');
+          return; // finally will still run
         }
-        setLoading(false);
+
+        const { data: { session }, error } = result;
+        if (error) console.error('getSession error:', error.message);
+
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+
+        if (currentUser) {
+          const profileData = await fetchProfile(currentUser.id);
+          if (mounted) setProfile(profileData);
+        }
+      } catch (err) {
+        console.error('Auth init error:', err);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (mounted) {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!mounted) return;
+        if (event === 'INITIAL_SESSION') return; // handled by initializeAuth
+
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+
+        if (currentUser) {
+          const profileData = await fetchProfile(currentUser.id);
+          if (mounted) setProfile(profileData);
         } else {
-          setProfile(null);
+          if (mounted) setProfile(null);
         }
-        setLoading(false);
       }
-    });
+    );
 
     return () => {
       mounted = false;
