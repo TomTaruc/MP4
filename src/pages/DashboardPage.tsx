@@ -4,24 +4,32 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { ZodiacSign, Page } from '../types';
 import HoroscopeCard from '../components/HoroscopeCard';
+import { getZodiacSign } from '../utils/zodiac';
 
 interface DashboardPageProps {
   onNavigate: (page: Page) => void;
 }
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
-  const { profile } = useAuth();
+  const { profile, loading } = useAuth();
   const [sign, setSign] = useState<ZodiacSign | null>(null);
 
   useEffect(() => {
-    if (!profile?.zodiac_sign) return;
-    supabase.from('zodiac_signs').select('*').eq('sign_name', profile.zodiac_sign).maybeSingle()
+    if (!profile) return;
+
+    // FIX: Force calculation from DOB first to bypass "stale" Aries data stored in test accounts
+    const calculatedSign = profile.date_of_birth ? getZodiacSign(profile.date_of_birth) : null;
+    const finalSign = calculatedSign || profile.zodiac_sign || 'Aries';
+
+    supabase.from('zodiac_signs').select('*').eq('sign_name', finalSign).maybeSingle()
       .then(({ data }) => setSign(data));
   }, [profile]);
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+
+  if (loading) return <div className="p-8 text-purple-300">Aligning the stars...</div>;
 
   return (
     <div className="p-8 max-w-4xl">
@@ -33,8 +41,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
         <p className="text-purple-300">Your cosmic dashboard awaits.</p>
       </div>
 
-      {sign && (
-        <div className="rounded-2xl p-6 mb-6 relative overflow-hidden"
+      {sign ? (
+        <div className="rounded-2xl p-6 mb-6 relative overflow-hidden transition-all duration-500"
           style={{
             background: `linear-gradient(135deg, ${sign.color_hex}18 0%, #1A0533 100%)`,
             border: `1px solid ${sign.color_hex}33`,
@@ -61,6 +69,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
               </div>
             </div>
           </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl p-6 mb-6 border border-purple-500/20 bg-purple-900/10 text-center text-purple-300">
+          Loading your astrological chart...
         </div>
       )}
 

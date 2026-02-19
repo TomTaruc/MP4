@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getZodiacSign } from '../utils/zodiac';
 
 const ZODIAC_DATA: Record<string, {
   symbol: string; element: string; quality: string; ruler: string;
@@ -259,8 +260,13 @@ const ELEMENT_COLORS: Record<string, string> = {
 
 export default function MyZodiacPage() {
   const { profile } = useAuth();
-  const sign = profile?.zodiac_sign || 'Aries';
-  const data = ZODIAC_DATA[sign] || ZODIAC_DATA['Aries'];
+  
+  const calculatedSign = profile?.date_of_birth ? getZodiacSign(profile.date_of_birth) : null;
+  const userSign = calculatedSign || profile?.zodiac_sign || 'Aries';
+  
+  const sign = ZODIAC_DATA[userSign] ? userSign : 'Aries';
+  const data = ZODIAC_DATA[sign];
+  
   const [activeTab, setActiveTab] = useState<'overview' | 'love' | 'career' | 'health'>('overview');
   const [showCompatibility, setShowCompatibility] = useState(false);
   const [savedAffirmation, setSavedAffirmation] = useState(false);
