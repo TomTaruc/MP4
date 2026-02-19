@@ -20,6 +20,7 @@ export default function StarField() {
 
     let animationId: number;
     const stars: Star[] = [];
+    let currentWidth = window.innerWidth; // Keep track of width
 
     function resize() {
       if (!canvas) return;
@@ -60,18 +61,30 @@ export default function StarField() {
     createStars();
     animationId = requestAnimationFrame(draw);
 
-    window.addEventListener('resize', () => { resize(); createStars(); });
+    const handleResize = () => {
+      // Only recreate stars if the width actually changed
+      // This stops mobile scrollbars/address bars from making the screen shake
+      if (window.innerWidth !== currentWidth) {
+        currentWidth = window.innerWidth;
+        resize();
+        createStars();
+      } else {
+        resize(); // Just update height boundaries
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
+      className="fixed inset-0 pointer-events-none z-0 block"
       style={{ background: 'transparent' }}
     />
   );

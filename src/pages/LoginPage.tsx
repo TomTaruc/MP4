@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Sparkles, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Page } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginPageProps {
   onNavigate: (page: Page) => void;
 }
 
 export default function LoginPage({ onNavigate }: LoginPageProps) {
+  const { refreshProfile } = useAuth(); // Brought in to force the app to recognize the login
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,10 +20,18 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    
     if (authError) {
       setError(authError.message);
+      setLoading(false);
+    } else {
+      // Upon successful login, force the AuthContext to fetch the profile 
+      // so App.tsx routes us directly to the dashboard
+      await refreshProfile();
+      // Notice we don't set loading to false here, which prevents the 
+      // user from clicking the button multiple times while the screen transitions
     }
   }
 

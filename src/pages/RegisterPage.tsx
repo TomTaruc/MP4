@@ -3,12 +3,14 @@ import { Sparkles, Eye, EyeOff, Mail, Lock, User, Calendar } from 'lucide-react'
 import { supabase } from '../lib/supabase';
 import { getZodiacSign } from '../utils/zodiac';
 import { Page } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface RegisterPageProps {
   onNavigate: (page: Page) => void;
 }
 
 export default function RegisterPage({ onNavigate }: RegisterPageProps) {
+  const { refreshProfile } = useAuth(); // Added to refresh global state
   const [fullName, setFullName] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
@@ -27,11 +29,18 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
     if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true);
     setError('');
+    
     const zodiacSign = getZodiacSign(dob);
     const { data, error: authError } = await supabase.auth.signUp({ email, password });
-    if (authError) { setError(authError.message); setLoading(false); return; }
+    
+    if (authError) { 
+      setError(authError.message); 
+      setLoading(false); 
+      return; 
+    }
+    
     if (data.user) {
-      await supabase.from('profiles').insert({
+      const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
         full_name: fullName,
         gender,
@@ -39,6 +48,16 @@ export default function RegisterPage({ onNavigate }: RegisterPageProps) {
         zodiac_sign: zodiacSign,
         role: 'user',
       });
+      
+      // Handle potential database row-level security or insert errors
+      if (profileError) {
+        setError(profileError.message);
+        setLoading(false);
+        return;
+      }
+      
+      // Update the AuthContext so App.tsx recognizes the new profile and routes to dashboard
+      await refreshProfile(); 
     }
     setLoading(false);
   }

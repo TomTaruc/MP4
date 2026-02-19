@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+/* Prevent horizontal scrollbar shaking & layout shifts */
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Lato', sans-serif;
   -webkit-font-smoothing: antialiased;
